@@ -1,14 +1,14 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from '../ui/Home/Home';
-import { Main } from '../ui/Main/Main';
+import { NewAccount } from '../ui/Auth/NewAccount';
+import { Login } from '../ui/Auth/Login';
 
 export default function Rotas() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/main' element={<Main />} />
+        <Route path='/' element={<Login />} />
+        <Route path='/new' element={<NewAccount />} />
       </Routes>
     </BrowserRouter>
   );
