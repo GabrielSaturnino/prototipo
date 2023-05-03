@@ -9,6 +9,7 @@ import Radio from '@mui/material/Radio';
 import FormLabel from '@mui/material/FormLabel';
 import { UsersCollection } from '../../api/users';
 import { useTracker } from 'meteor/react-meteor-data';
+import { Link } from 'react-router-dom'
 
 const style = {
   container: {
@@ -23,6 +24,7 @@ export const NewAccount = () => {
   const users = useTracker(() => UsersCollection.find({}).fetch());
 
   const handleSignIn = e => {
+
     e.preventDefault();
 
     const data = {

@@ -4,16 +4,45 @@ import TextField from '@mui/material/TextField';
 import { Container, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
+import { UsersCollection } from '../../api/users';
+import { useTracker } from 'meteor/react-meteor-data';
 
 export const Login = () => {
 
+  const users = useTracker(() => UsersCollection.find({}).fetch());
+
   const handleSignIn = e => {
     e.preventDefault();
+
     const data = {
       email: e.target.elements.email.value,
       password: e.target.elements.password.value
     }
-    console.log(data);
+
+    const validateMsg = validate(data);
+
+    if (validateMsg !== "Dados válidos") alert(validateMsg);
+    else verifyExistentUser(data);
+  }
+
+  const validate = dataUser => {
+    if (!dataUser.email) return "Digite um e-mail válido!";
+    if (!dataUser.password) return "Digite uma senha valida!";
+    else return "Dados válidos";
+  }
+
+  const verifyExistentUser = user => {
+    let currentUser = '';
+    users.forEach(savedUser => {
+      if (savedUser.email === user.email && savedUser.password === user.password) {
+        currentUser = savedUser;
+      }
+    });
+    currentUser !== '' ? handleLogin(currentUser) : alert(`Usuário não encontrado!`);
+  }
+
+  const handleLogin = (user) => {
+    console.log(`vou logar o ${user}`);
   }
 
   return (
