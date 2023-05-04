@@ -6,23 +6,33 @@ import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 import { UsersCollection } from '../../api/users';
 import { useTracker } from 'meteor/react-meteor-data';
+import { Form } from 'react-router-dom';
 
 export const Login = () => {
 
   const users = useTracker(() => UsersCollection.find({}).fetch());
 
   const handleSignIn = e => {
-    e.preventDefault();
+    //e.preventDefault();
 
     const data = {
       email: e.target.elements.email.value,
       password: e.target.elements.password.value
     }
 
-    const validateMsg = validate(data);
+    let validateMsg = validate(data);
 
-    if (validateMsg !== "Dados válidos") alert(validateMsg);
-    else verifyExistentUser(data);
+    if (validateMsg !== "Dados válidos") {
+      e.preventDefault();
+      alert(validateMsg);
+    } else validateMsg = verifyExistentUser(data);
+
+    if (validateMsg === '') {
+      e.preventDefault();
+      alert('Dados inválidos!');
+    } else {
+      handleLogin(data);
+    }
   }
 
   const validate = dataUser => {
@@ -38,7 +48,7 @@ export const Login = () => {
         currentUser = savedUser;
       }
     });
-    currentUser !== '' ? handleLogin(currentUser) : alert(`Usuário não encontrado!`);
+    return currentUser;
   }
 
   const handleLogin = (user) => {
@@ -46,34 +56,37 @@ export const Login = () => {
   }
 
   return (
-    <Container sx={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-      <Box
-        component="form"
-        onSubmit={handleSignIn}
-        sx={{
-          '& .MuiTextField-root': { m: 1, width: '25ch' }, display: 'flex', flexDirection: 'column',
-        }}
-        autoComplete="on"
-      >
-        <TextField
-          required
-          id="outlined-required"
-          type='email'
-          name='email'
-          placeholder='example@email.com'
-        />
-        <TextField
-          required
-          id="outlined-disabled"
-          type='password'
-          name='password'
-          placeholder='Password'
-        />
-        <Button variant="contained" type='submit'>
-          Logar
-        </Button>
-        <Typography variant='p'>clique <Link to={'/new'}>aqui</Link> para criar sua conta</Typography>
-      </Box>
-    </Container>
+    <Form onSubmit={handleSignIn} action='/main'>
+      <Container sx={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <Box
+          component="div"
+          sx={{
+            '& .MuiTextField-root': { m: 1, width: '25ch' }, display: 'flex', flexDirection: 'column',
+          }}
+          autoComplete="on"
+        >
+
+          <TextField
+            required
+            id="outlined-required"
+            type='email'
+            name='email'
+            placeholder='example@email.com'
+          />
+          <TextField
+            required
+            id="outlined-disabled"
+            type='password'
+            name='password'
+            placeholder='Password'
+          />
+          <Button variant="contained" type='submit'>
+            Logar
+          </Button>
+          <Typography variant='p'>clique <Link to={'/new'}>aqui</Link> para criar sua conta</Typography>
+
+        </Box>
+      </Container >
+    </Form >
   );
 }

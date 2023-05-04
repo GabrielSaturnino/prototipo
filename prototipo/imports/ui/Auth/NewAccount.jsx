@@ -9,7 +9,7 @@ import Radio from '@mui/material/Radio';
 import FormLabel from '@mui/material/FormLabel';
 import { UsersCollection } from '../../api/users';
 import { useTracker } from 'meteor/react-meteor-data';
-import { Link } from 'react-router-dom'
+import { Form } from 'react-router-dom';
 
 const style = {
   container: {
@@ -25,8 +25,6 @@ export const NewAccount = () => {
 
   const handleSignIn = e => {
 
-    e.preventDefault();
-
     const data = {
       name: e.target.elements.name.value,
       email: e.target.elements.email.value,
@@ -36,10 +34,19 @@ export const NewAccount = () => {
       gender: e.target.elements.gender.value
     }
 
-    const validateMsg = validate(data);
+    let validateMsg = validate(data);
 
-    if (validateMsg !== "Dados válidos") alert(validateMsg);
-    else verifyExistentUser(data);
+    if (validateMsg !== "Dados válidos") {
+      e.preventDefault();
+      alert(validateMsg);
+    } else validateMsg = verifyExistentUser(data);
+
+    if (validateMsg === '') {
+      createUser(data);
+    } else {
+      e.preventDefault();
+      alert(validateMsg);
+    }
   }
 
   const validate = dataUser => {
@@ -53,9 +60,9 @@ export const NewAccount = () => {
   const verifyExistentUser = user => {
     let msg = '';
     users.forEach(savedUser => {
-      if (savedUser.email === user.email) msg = 'E-mail já cadastrado!';
+      if (savedUser.email === user.email) msg = 'E-mail ja cadastrado';
     });
-    msg !== '' ? alert(msg) : createUser(user);
+    return msg;
   }
 
   const createUser = user => {
@@ -71,62 +78,65 @@ export const NewAccount = () => {
   }
 
   return (
-    <Container sx={style.container}>
-      <Box
-        component="form"
-        onSubmit={handleSignIn}
-        sx={style.form}
-        autoComplete="on"
-      >
-        <TextField
-          required
-          type='text'
-          name='name'
-          placeholder='Digite seu nome'
-        />
-
-        <TextField
-          required
-          type='email'
-          name='email'
-          placeholder='Digite seu E-mail'
-        />
-
-        <TextField
-          required
-          type='text'
-          name='empresa'
-          placeholder='Empresa em que trabalha'
-        />
-
-        <TextField
-          required
-          type='password'
-          name='password'
-          placeholder='Password'
-        />
-
-        <TextField
-          required
-          type='date'
-          name='date'
-        />
-
-        <FormLabel id="radio-buttons-group-label">Gender</FormLabel>
-        <RadioGroup
-          aria-labelledby="radio-buttons-group-label"
-          defaultValue="female"
-          name="radio-buttons-group"
+    <Form onSubmit={handleSignIn} action='/main'>
+      <Container sx={style.container}>
+        <Box
+          component="div"
+          sx={style.form}
+          autoComplete="on"
         >
-          <FormControlLabel value="female" name='gender' control={<Radio />} label="Female" />
-          <FormControlLabel value="male" name='gender' control={<Radio />} label="Male" />
-          <FormControlLabel value="other" name='gender' control={<Radio />} label="Other" />
-        </RadioGroup>
 
-        <Button variant="contained" type='submit'>
-          Cadastrar
-        </Button>
-      </Box>
-    </Container>
+          <TextField
+            required
+            type='text'
+            name='name'
+            placeholder='Digite seu nome'
+          />
+
+          <TextField
+            required
+            type='email'
+            name='email'
+            placeholder='Digite seu E-mail'
+          />
+
+          <TextField
+            required
+            type='text'
+            name='empresa'
+            placeholder='Empresa em que trabalha'
+          />
+
+          <TextField
+            required
+            type='password'
+            name='password'
+            placeholder='Password'
+          />
+
+          <TextField
+            required
+            type='date'
+            name='date'
+          />
+
+          <FormLabel id="radio-buttons-group-label">Gender</FormLabel>
+          <RadioGroup
+            aria-labelledby="radio-buttons-group-label"
+            defaultValue="female"
+            name="radio-buttons-group"
+          >
+            <FormControlLabel value="female" name='gender' control={<Radio />} label="Female" />
+            <FormControlLabel value="male" name='gender' control={<Radio />} label="Male" />
+            <FormControlLabel value="other" name='gender' control={<Radio />} label="Other" />
+          </RadioGroup>
+
+          <Button variant="contained" type='submit'>
+            Cadastrar
+          </Button>
+
+        </Box>
+      </Container>
+    </Form>
   );
 }
