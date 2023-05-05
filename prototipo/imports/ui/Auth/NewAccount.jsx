@@ -34,22 +34,22 @@ export const NewAccount = () => {
       gender: e.target.elements.gender.value
     }
 
-    let validateMsg = validate(data);
+    let validateMsg = handleValidate(data);
 
     if (validateMsg !== "Dados válidos") {
       e.preventDefault();
       alert(validateMsg);
-    } else validateMsg = verifyExistentUser(data);
+    } else validateMsg = handleVerifyExistentUser(data);
 
     if (validateMsg === '') {
-      createUser(data);
+      handleCreateUser(data);
     } else {
       e.preventDefault();
       alert(validateMsg);
     }
   }
 
-  const validate = dataUser => {
+  const handleValidate = dataUser => {
     if (!dataUser.name || dataUser.name.length < 3) return "Informe um nome válido!";
     if (!dataUser.email || dataUser.email.length < 5) return "Digite um e-mail válido!";
     if (!dataUser.empresa) return "Digite a empresa em que trabalha";
@@ -57,7 +57,7 @@ export const NewAccount = () => {
     else return "Dados válidos";
   }
 
-  const verifyExistentUser = user => {
+  const handleVerifyExistentUser = user => {
     let msg = '';
     users.forEach(savedUser => {
       if (savedUser.email === user.email) msg = 'E-mail ja cadastrado';
@@ -65,7 +65,7 @@ export const NewAccount = () => {
     return msg;
   }
 
-  const createUser = user => {
+  const handleCreateUser = user => {
     UsersCollection.insert({
       name: user.name,
       email: user.email,

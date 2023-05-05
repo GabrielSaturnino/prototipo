@@ -20,12 +20,12 @@ export const Login = () => {
       password: e.target.elements.password.value
     }
 
-    let validateMsg = validate(data);
+    let validateMsg = handleValidate(data);
 
     if (validateMsg !== "Dados válidos") {
       e.preventDefault();
       alert(validateMsg);
-    } else validateMsg = verifyExistentUser(data);
+    } else validateMsg = handleVerifyExistentUser(data);
 
     if (validateMsg === '') {
       e.preventDefault();
@@ -35,13 +35,13 @@ export const Login = () => {
     }
   }
 
-  const validate = dataUser => {
+  const handleValidate = dataUser => {
     if (!dataUser.email) return "Digite um e-mail válido!";
     if (!dataUser.password) return "Digite uma senha valida!";
     else return "Dados válidos";
   }
 
-  const verifyExistentUser = user => {
+  const handleVerifyExistentUser = user => {
     let currentUser = '';
     users.forEach(savedUser => {
       if (savedUser.email === user.email && savedUser.password === user.password) {
