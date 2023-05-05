@@ -56,7 +56,7 @@ export const Login = () => {
   }
 
   return (
-    <Form onSubmit={handleSignIn} action='/main'>
+    <Form onSubmit={handleSignIn} action='/main/home'>
       <Container sx={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         <Box
           component="div"

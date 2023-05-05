@@ -78,7 +78,7 @@ export const NewAccount = () => {
   }
 
   return (
-    <Form onSubmit={handleSignIn} action='/main'>
+    <Form onSubmit={handleSignIn} action='/main/home'>
       <Container sx={style.container}>
         <Box
           component="div"
