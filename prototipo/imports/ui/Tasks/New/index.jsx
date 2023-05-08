@@ -19,21 +19,14 @@ export default function NewTask() {
       desc: e.target.elements.taskDescription.value,
       createdAt: new Date(),
       createdBy: user._id,
-      userName: user.username
+      userName: user.username,
+      situation: 'created'
     }
 
-    TasksCollection.insert({
-      name: task.name,
-      desc: task.desc,
-      createdAt: task.createdAt,
-      situation: task.created,
-      createdBy: task.createdBy,
-      userName: task.username
-    });
+    TasksCollection.insert(task);
 
     alert('Tarefa criada!');
     handleRedirect();
-
   }
 
   const handleRedirect = () => {
