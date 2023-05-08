@@ -1,5 +1,6 @@
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
+
 import { NewAccount } from '../ui/Auth/NewAccount';
 import { Login } from '../ui/Auth/Login';
 import { Main } from '../ui/Main/Main';
@@ -11,6 +12,8 @@ import NewTask from '../ui/Tasks/New';
 import Home from '../ui/Home';
 import Profile from '../ui/Profile';
 
+import { ProtectedRoutes } from './auth';
+
 export const Rota = createBrowserRouter([
   {
     path: '/',
@@ -21,21 +24,26 @@ export const Rota = createBrowserRouter([
     element: <NewAccount />,
   },
   {
-    path: '/main',
-    element: <Main />,
+    element: <ProtectedRoutes />,
     children: [
       {
-        path: '/main/home',
-        element: <Home />
-      },
-      {
-        path: '/main/profile',
-        element: <Profile />
-      },
-      {
-        path: '/main/tasks',
-        element: <AllTasks />
-      },
+        path: '/main',
+        element: <Main />,
+        children: [
+          {
+            path: '/main/home',
+            element: <Home />
+          },
+          {
+            path: '/main/profile',
+            element: <Profile />
+          },
+          {
+            path: '/main/tasks',
+            element: <AllTasks />
+          },
+        ]
+      }
     ]
-  }
+  },
 ]);

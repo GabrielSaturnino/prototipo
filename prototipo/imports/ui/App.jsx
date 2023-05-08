@@ -7,7 +7,7 @@ import { RouterProvider } from 'react-router-dom';
 import { Rota } from '../rotas/routes';
 
 export const App = () => {
-  const text = useTracker(() => TasksCollection.find({}).fetch());
+  //const text = useTracker(() => TasksCollection.find({}).fetch());
   return (
     <RouterProvider router={Rota} />
   );

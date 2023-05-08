@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { Container, Typography } from '@mui/material';
@@ -7,31 +7,35 @@ import { Link } from 'react-router-dom';
 import { UsersCollection } from '../../api/users';
 import { useTracker } from 'meteor/react-meteor-data';
 import { Form } from 'react-router-dom';
+import { Meteor } from 'meteor/meteor';
 
 export const Login = () => {
 
   const users = useTracker(() => UsersCollection.find({}).fetch());
 
   const handleSignIn = e => {
-    //e.preventDefault();
-
     const data = {
       email: e.target.elements.email.value,
       password: e.target.elements.password.value
     }
 
+    // validando dados
     let validateMsg = handleValidate(data);
-
     if (validateMsg !== "Dados válidos") {
       e.preventDefault();
       alert(validateMsg);
-    } else validateMsg = handleVerifyExistentUser(data);
+    } else {
+      //validando se o usuario existe
+      validateMsg = handleVerifyExistentUser(data);
+    }
 
+    //usuario inexistente
     if (validateMsg === '') {
       e.preventDefault();
       alert('Dados inválidos!');
     } else {
-      handleLogin(data);
+      // usuario existente
+      handleLogIn(validateMsg);
     }
   }
 
@@ -51,12 +55,14 @@ export const Login = () => {
     return currentUser;
   }
 
-  const handleLogin = (user) => {
-    console.log(`vou logar o ${user}`);
+  const handleLogIn = data => {
+    const { email, password } = data;
+
+    Meteor.loginWithPassword('meteorite', 'password');
   }
 
   return (
-    <Form onSubmit={handleSignIn} action='/main/home'>
+    <Form onSubmit={handleSignIn} action='/main'>
       <Container sx={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         <Box
           component="div"
