@@ -56,9 +56,12 @@ export const Login = () => {
   }
 
   const handleLogIn = data => {
-    const { email, password } = data;
+    const { name, password } = data;
+    Meteor.loginWithPassword(name, password);
+  }
 
-    Meteor.loginWithPassword('meteorite', 'password');
+  const teste = () => {
+    console.log('teste aqui!');
   }
 
   return (

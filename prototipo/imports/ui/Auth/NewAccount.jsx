@@ -10,6 +10,7 @@ import FormLabel from '@mui/material/FormLabel';
 import { UsersCollection } from '../../api/users';
 import { useTracker } from 'meteor/react-meteor-data';
 import { Form } from 'react-router-dom';
+import { Accounts } from 'meteor/accounts-base';
 
 const style = {
   container: {
@@ -34,18 +35,18 @@ export const NewAccount = () => {
       gender: e.target.elements.gender.value
     }
 
-    let validateMsg = handleValidate(data);
+    let validate = handleValidate(data);
 
-    if (validateMsg !== "Dados válidos") {
+    if (validate !== "Dados válidos") {
       e.preventDefault();
-      alert(validateMsg);
-    } else validateMsg = handleVerifyExistentUser(data);
+      alert(validate);
+    } else validate = handleVerifyExistentUser(data);
 
-    if (validateMsg === '') {
+    if (validate === '') {
       handleCreateUser(data);
     } else {
       e.preventDefault();
-      alert(validateMsg);
+      alert(validate);
     }
   }
 
@@ -66,6 +67,7 @@ export const NewAccount = () => {
   }
 
   const handleCreateUser = user => {
+    // Salva os dados de usuário
     UsersCollection.insert({
       name: user.name,
       email: user.email,
@@ -75,10 +77,21 @@ export const NewAccount = () => {
       gender: user.gender,
       createdAt: new Date()
     });
+
+    handleCreate(user);
+  }
+
+  const handleCreate = user => {
+    // Cria o usuário
+    Accounts.createUser({
+      username: user.name,
+      password: user.password,
+    });
+    alert('Usuário criado!');
   }
 
   return (
-    <Form onSubmit={handleSignIn} action='/main/home'>
+    <Form onSubmit={handleSignIn} action='/'>
       <Container sx={style.container}>
         <Box
           component="div"

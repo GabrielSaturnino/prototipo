@@ -23,6 +23,7 @@ import TaskIcon from '@mui/icons-material/Task';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 import { Outlet, Link } from 'react-router-dom';
+import { Meteor } from 'meteor/meteor';
 
 const drawerWidth = 240;
 
@@ -107,6 +108,10 @@ export const Main = () => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  const handleLogout = () => {
+    Meteor.logout();
+  }
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -228,7 +233,7 @@ export const Main = () => {
         <Divider />
         <List>
           <ListItem disablePadding sx={{ display: 'block' }}>
-            <Link to={'/'}
+            <Link to={'/'} onClick={handleLogout}
               style={{ textDecoration: 'none', color: 'black' }}
             >
               <ListItemButton
