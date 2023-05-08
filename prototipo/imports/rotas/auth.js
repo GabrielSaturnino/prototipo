@@ -6,12 +6,9 @@ export const ProtectedRoutes = () => {
     const user = Meteor.user();
 
     const protected = user != undefined;
-    console.log(`Rota protegida, usuário: `);
-    console.log(user)
     return (
         <>
             {protected != false ? <Outlet /> : <Navigate to={'/'} />}
         </>
     );
 }
-

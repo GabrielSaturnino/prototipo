@@ -40,7 +40,11 @@ export const Rota = createBrowserRouter([
           },
           {
             path: '/main/tasks',
-            element: <AllTasks />
+            element: <AllTasks />,
+          },
+          {
+            path: '/main/tasks/new',
+            element: <NewTask />
           },
         ]
       }
