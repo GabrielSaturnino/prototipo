@@ -18,68 +18,80 @@ export const ViewTask = () => {
 
     const task = TasksCollection.findOne({ _id: id });
 
-    console.log(task.name);
-
     return (
         <Box
-            component="form"
             sx={{
-                '& .MuiTextField-root': { m: 1, width: '25ch' },
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'lightgray',
                 display: 'flex',
                 alignItems: 'center',
-                flexDirection: 'column',
-                gap: '15px'
+                justifyContent: 'center',
             }}
         >
-            <div>
-                <Typography variant='body1'>Nome da tarefa:</Typography>
-                <TextField
-                    id="outlined-read-only-input"
-                    defaultValue={task.name}
-                    InputProps={{
-                        readOnly: true,
-                    }}
-                />
-            </div>
-            <div>
-                <Typography variant='body1'>Descrição da tarefa:</Typography>
-                <TextField
-                    id="filled-read-only-input"
-                    defaultValue={task.desc}
-                    InputProps={{
-                        readOnly: true,
-                    }}
-                    variant="filled"
-                />
-            </div>
-            <div>
-                <Typography variant='body1'>Criador da tarefa:</Typography>
-                <TextField
-                    id="standard-read-only-input"
-                    defaultValue={task.userName
-                    }
-                    InputProps={{
-                        readOnly: true,
-                    }}
-                    variant="standard"
-                />
-            </div>
-            <div>
-                <Typography variant='body1'>Situação da tarefa:</Typography>
-                <TextField
-                    id="outlined-read-only-input"
-                    defaultValue={task.situation}
-                    InputProps={{
-                        readOnly: true,
-                    }}
-                />
-            </div>
-            {(userID === task.createdBy) &&
-                <Link to={`/main/tasks/edit/${id}`} style={{ textDecoration: 'none', color: 'white' }}>
-                    <Button variant="contained">Editar Tarefa
-                        <ModeEditIcon fontSize='medium' sx={{ marginLeft: '5px' }} /></Button>
-                </Link>
-            }
+            <Box
+                component="form"
+                sx={{
+                    '& .MuiTextField-root': { m: 1, width: '50vw' },
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                    gap: '15px'
+                }}
+            >
+                <div>
+                    <Typography variant='body1'>Nome da tarefa:</Typography>
+                    <TextField
+                        id="outlined-read-only-input"
+                        defaultValue={task.name}
+                        sx={{ width: '100%' }}
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                    />
+                </div>
+                <div>
+                    <Typography variant='body1'>Descrição da tarefa:</Typography>
+                    <TextField
+                        id="filled-read-only-input"
+                        defaultValue={task.desc}
+                        sx={{ width: '100%' }}
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                        variant="filled"
+                    />
+                </div>
+                <div>
+                    <Typography variant='body1'>Criador da tarefa:</Typography>
+                    <TextField
+                        id="standard-read-only-input"
+                        defaultValue={task.userName}
+                        sx={{ width: '100%' }}
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                        variant="standard"
+                    />
+                </div>
+                <div>
+                    <Typography variant='body1'>Situação da tarefa:</Typography>
+                    <TextField
+                        id="outlined-read-only-input"
+                        defaultValue={task.situation}
+                        sx={{ width: '100%' }}
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                    />
+                </div>
+                {(userID === task.createdBy) &&
+                    <Link to={`/main/tasks/edit/${id}`} style={{ textDecoration: 'none', color: 'white' }}>
+                        <Button variant="contained">Editar Tarefa
+                            <ModeEditIcon fontSize='medium' sx={{ marginLeft: '5px' }} /></Button>
+                    </Link>
+                }
+            </Box>
         </Box>
     );
 }
