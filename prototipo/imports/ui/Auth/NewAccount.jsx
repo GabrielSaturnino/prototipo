@@ -40,7 +40,7 @@ export const NewAccount = () => {
     if (validate !== "Dados válidos") {
       e.preventDefault();
       alert(validate);
-    } else validate = handleVerifyExistentUser(data);
+    } else validate = handleVerifyExistentUser(data.email);
 
     if (validate === '') {
       handleCreateUser(data);
@@ -60,9 +60,10 @@ export const NewAccount = () => {
 
   const handleVerifyExistentUser = user => {
     let msg = '';
-    users.forEach(savedUser => {
-      if (savedUser.email === user.email) msg = 'E-mail ja cadastrado';
-    });
+    if (Accounts.findUserByEmail({ user })) msg = 'E-mail ja cadastrado';
+    // users.forEach(savedUser => {
+    //   if (savedUser.email === user.email) msg = 'E-mail ja cadastrado';
+    // });
     return msg;
   }
 
@@ -86,6 +87,13 @@ export const NewAccount = () => {
     Accounts.createUser({
       username: user.name,
       password: user.password,
+      email: user.email,
+      profile: {
+        empresa: user.empresa,
+        date: user.date,
+        gender: user.gender,
+        createdAt: new Date()
+      }
     });
     alert('Usuário criado!');
   }

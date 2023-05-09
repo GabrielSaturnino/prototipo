@@ -8,6 +8,7 @@ import { UsersCollection } from '../../api/users';
 import { useTracker } from 'meteor/react-meteor-data';
 import { Form } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
+import { Accounts } from 'meteor/accounts-base';
 
 export const Login = () => {
 
@@ -19,24 +20,33 @@ export const Login = () => {
       password: e.target.elements.password.value
     }
 
-    // validando dados
-    let validateMsg = handleValidate(data);
-    if (validateMsg !== "Dados válidos") {
-      e.preventDefault();
-      alert(validateMsg);
-    } else {
-      //validando se o usuario existe
-      validateMsg = handleVerifyExistentUser(data);
-    }
+    console.log('cheguei ate aqui')
 
-    //usuario inexistente
-    if (validateMsg === '') {
-      e.preventDefault();
-      alert('Dados inválidos!');
-    } else {
-      // usuario existente
-      handleLogIn(validateMsg);
-    }
+
+    const { email, password } = data;
+    console.log(email, password)
+
+    Meteor.loginWithPassword(email, password);
+
+    // validando dados
+    // let validateMsg = handleValidate(data);
+    // if (validateMsg !== "Dados válidos") {
+    //   e.preventDefault();
+    //   alert(validateMsg);
+    // } else {
+    //   //validando se o usuario existe
+    //   validateMsg = handleVerifyExistentUser(data);
+    // }
+
+    // //usuario inexistente
+    // if (validateMsg === '') {
+    //   e.preventDefault();
+    //   alert('Dados inválidos!');
+    // } else {
+
+    //   // usuario existente
+    //   handleLogIn(validateMsg);
+    // }
   }
 
   const handleValidate = dataUser => {
@@ -56,12 +66,13 @@ export const Login = () => {
   }
 
   const handleLogIn = data => {
-    const { name, password } = data;
-    Meteor.loginWithPassword(name, password);
+    const { name, password, email } = data;
+    console.log(email);
+    Meteor.loginWithPassword(email, password);
   }
 
   return (
-    <Form onSubmit={handleSignIn} action='/main'>
+    <Form onSubmit={handleSignIn} action='/main/home'>
       <Container sx={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         <Box
           component="div"
