@@ -60,10 +60,6 @@ export const Login = () => {
     Meteor.loginWithPassword(name, password);
   }
 
-  const teste = () => {
-    console.log('teste aqui!');
-  }
-
   return (
     <Form onSubmit={handleSignIn} action='/main'>
       <Container sx={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
