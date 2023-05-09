@@ -11,56 +11,63 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 
 import { TasksCollection } from '../../../api/task';
+import { Meteor } from 'meteor/meteor';
+
+import { Link } from 'react-router-dom';
 
 export const TaskCard = tasks => {
 
+    const user = Meteor.user();
     const imgAdress = 'https://upload.wikimedia.org/wikipedia/commons/3/38/Task.svg'
 
     const handleDelete = () => {
 
         const id = tasks.tasks._id;
-        TasksCollection.remove(id);
+        if (user._id === tasks.tasks.createdBy) TasksCollection.remove(id);
+        else alert('Somente o criador da tarefa pode apaga-la');
     }
 
     return (
-        <List sx={{ width: '100%' }}>
-
-
-            <ListItem alignItems="flex-start">
-                <Box
-                    component={'div'}
-                    sx={{
-                        background: 'red',
-                        borderRadius: '5px',
-                        width: '100%',
-                        height: '150px',
-                        display: 'flex',
-                        alignItems: 'center',
-                    }}
-                >
-                    <img src={imgAdress} alt="icone de task" style={{ width: '100px' }} />
+        <Link to={`/main/tasks/view/${tasks.tasks._id}`} style={{ textDecoration: 'none', color: 'black' }}>
+            <List sx={{ width: '100%' }}>
+                <ListItem alignItems="flex-start">
                     <Box
                         component={'div'}
                         sx={{
-                            background: 'pink',
-                            height: '100%',
-                            width: 'calc(100% - 100px)',
-                            p: '10px'
+                            background: 'red',
+                            borderRadius: '5px',
+                            width: '100%',
+                            height: '150px',
+                            display: 'flex',
+                            alignItems: 'center',
                         }}
                     >
-                        <Typography variant='h4'>
-                            {tasks.tasks.createdAt.getHours()}:{tasks.tasks.createdAt.getMinutes()} - {tasks.tasks.name}</Typography>
-                        <Typography variant='span'>{tasks.tasks.desc}</Typography>
+                        <img src={imgAdress} alt="icone de task" style={{ width: '100px' }} />
+                        <Box
+                            component={'div'}
+                            sx={{
+                                background: 'pink',
+                                height: '100%',
+                                width: 'calc(100% - 100px)',
+                                p: '10px',
+                                cursor: 'pointer',
+                                titleAccess: 'visualizar tarefa'
+                            }}
+                        >
+                            <Typography variant='h4'>
+                                {tasks.tasks.createdAt.getHours()}:{tasks.tasks.createdAt.getMinutes()} - {tasks.tasks.name}</Typography>
+                            <Typography variant='span'>Criado por: {tasks.tasks.userName}</Typography>
+                        </Box>
+                        <DeleteIcon
+                            fontSize='large'
+                            titleAccess='Apagar tarefa'
+                            sx={{ background: 'pink', color: 'red', cursor: 'pointer' }}
+                            onClick={handleDelete}
+                        />
                     </Box>
-                    <DeleteIcon
-                        fontSize='large'
-                        sx={{ background: 'pink', color: 'red' }}
-                        onClick={handleDelete}
-                    />
-                </Box>
-            </ListItem>
-
-            <Divider variant="inset" component="li" />
-        </List>
+                </ListItem>
+                <Divider variant="inset" component="li" />
+            </List >
+        </Link>
     );
 }

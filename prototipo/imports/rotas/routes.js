@@ -8,6 +8,7 @@ import { Main } from '../ui/Main/Main';
 import AllTasks from '../ui/Tasks/All';
 import EditTask from '../ui/Tasks/Edit';
 import NewTask from '../ui/Tasks/New';
+import { ViewTask } from '../ui/Tasks/ViewTask';
 
 import Home from '../ui/Home';
 import Profile from '../ui/Profile';
@@ -45,6 +46,14 @@ export const Rota = createBrowserRouter([
           {
             path: '/main/tasks/new',
             element: <NewTask />
+          },
+          {
+            path: '/main/tasks/view/:id',
+            element: <ViewTask />
+          },
+          {
+            path: '/main/tasks/edit/:id',
+            element: <EditTask />
           },
         ]
       }
