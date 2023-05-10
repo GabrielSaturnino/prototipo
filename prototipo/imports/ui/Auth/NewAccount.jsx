@@ -10,7 +10,10 @@ import FormLabel from '@mui/material/FormLabel';
 import { UsersCollection } from '../../api/users';
 import { useTracker } from 'meteor/react-meteor-data';
 import { Form } from 'react-router-dom';
+
 import { Accounts } from 'meteor/accounts-base';
+import { Meteor } from 'meteor/meteor';
+
 
 const style = {
   container: {
@@ -40,7 +43,7 @@ export const NewAccount = () => {
     if (validate !== "Dados válidos") {
       e.preventDefault();
       alert(validate);
-    } else validate = handleVerifyExistentUser(data.email);
+    } else validate = handleVerifyExistentUser(data);
 
     if (validate === '') {
       handleCreateUser(data);
@@ -60,10 +63,10 @@ export const NewAccount = () => {
 
   const handleVerifyExistentUser = user => {
     let msg = '';
-    if (Accounts.findUserByEmail({ user })) msg = 'E-mail ja cadastrado';
-    // users.forEach(savedUser => {
-    //   if (savedUser.email === user.email) msg = 'E-mail ja cadastrado';
-    // });
+    users.forEach(savedUser => {
+      if (savedUser.email === user.email) msg = 'E-mail ja cadastrado';
+      if (savedUser.name === user.name) msg = 'Este nome ja está sendo utilizado';
+    });
     return msg;
   }
 
@@ -72,10 +75,6 @@ export const NewAccount = () => {
     UsersCollection.insert({
       name: user.name,
       email: user.email,
-      empresa: user.empresa,
-      password: user.password,
-      date: user.date,
-      gender: user.gender,
       createdAt: new Date()
     });
 
@@ -86,8 +85,8 @@ export const NewAccount = () => {
     // Cria o usuário
     Accounts.createUser({
       username: user.name,
-      password: user.password,
       email: user.email,
+      password: user.password,
       profile: {
         empresa: user.empresa,
         date: user.date,
