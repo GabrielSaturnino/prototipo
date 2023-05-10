@@ -20,33 +20,27 @@ export const Login = () => {
       password: e.target.elements.password.value
     }
 
-    console.log('cheguei ate aqui')
-
-
-    const { email, password } = data;
-    console.log(email, password)
-
-    Meteor.loginWithPassword(email, password);
+    //Meteor.loginWithPassword(email, password);
 
     // validando dados
-    // let validateMsg = handleValidate(data);
-    // if (validateMsg !== "Dados válidos") {
-    //   e.preventDefault();
-    //   alert(validateMsg);
-    // } else {
-    //   //validando se o usuario existe
-    //   validateMsg = handleVerifyExistentUser(data);
-    // }
+    let validateMsg = handleValidate(data);
+    if (validateMsg !== "Dados válidos") {
+      e.preventDefault();
+      alert(validateMsg);
+    } else {
+      //validando se o usuario existe
+      validateMsg = handleVerifyExistentUser(data);
+    }
 
     // //usuario inexistente
-    // if (validateMsg === '') {
-    //   e.preventDefault();
-    //   alert('Dados inválidos!');
-    // } else {
+    if (!validateMsg) {
+      e.preventDefault();
+      alert('Dados inválidos!');
+    } else {
 
-    //   // usuario existente
-    //   handleLogIn(validateMsg);
-    // }
+      // usuario existente
+      handleLogIn(validateMsg, data);
+    }
   }
 
   const handleValidate = dataUser => {
@@ -56,19 +50,22 @@ export const Login = () => {
   }
 
   const handleVerifyExistentUser = user => {
-    let currentUser = '';
+    let currentUser = false;
     users.forEach(savedUser => {
-      if (savedUser.email === user.email && savedUser.password === user.password) {
-        currentUser = savedUser;
-      }
+      if (savedUser.email === user.email) currentUser = savedUser;
     });
     return currentUser;
   }
 
-  const handleLogIn = data => {
-    const { name, password, email } = data;
-    console.log(email);
-    Meteor.loginWithPassword(email, password);
+  const handleLogIn = (data, ...rest) => {
+    const { name, email } = data;
+    const password = rest[0].password;
+
+    try {
+      Meteor.loginWithPassword(name, password);
+    } catch (err) {
+      console.log('ocorreu um erro!');
+    }
   }
 
   return (
