@@ -14,6 +14,8 @@ import { Form } from 'react-router-dom';
 import { Accounts } from 'meteor/accounts-base';
 import { Meteor } from 'meteor/meteor';
 
+import base64Image from './defaultImg';
+
 
 const style = {
   container: {
@@ -37,6 +39,8 @@ export const NewAccount = () => {
       date: e.target.elements.date.value,
       gender: e.target.elements.gender.value
     }
+
+    console.log(base64Image);
 
     let validate = handleValidate(data);
 
@@ -75,6 +79,7 @@ export const NewAccount = () => {
     UsersCollection.insert({
       name: user.name,
       email: user.email,
+      profileImg: base64Image,
       createdAt: new Date()
     });
 
@@ -143,12 +148,12 @@ export const NewAccount = () => {
           <FormLabel id="radio-buttons-group-label">Gender</FormLabel>
           <RadioGroup
             aria-labelledby="radio-buttons-group-label"
-            defaultValue="female"
+            defaultValue="Feminino"
             name="radio-buttons-group"
           >
-            <FormControlLabel value="female" name='gender' control={<Radio />} label="Female" />
-            <FormControlLabel value="male" name='gender' control={<Radio />} label="Male" />
-            <FormControlLabel value="other" name='gender' control={<Radio />} label="Other" />
+            <FormControlLabel value="Feminino" name='gender' control={<Radio />} label="Feminino" />
+            <FormControlLabel value="Masculino" name='gender' control={<Radio />} label="Masculino" />
+            <FormControlLabel value="Outro" name='gender' control={<Radio />} label="Outro" />
           </RadioGroup>
 
           <Button variant="contained" type='submit'>
