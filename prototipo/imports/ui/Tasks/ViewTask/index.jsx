@@ -30,7 +30,14 @@ export const ViewTask = () => {
 
     if (estado === 'Criada') options = options0;
     if (estado === 'Iniciada') options = options1;
-    if (estado === 'Finalizada') options = options1;
+    if (estado === 'Finalizada') options = options2;
+
+
+    const handleValidarEstado = () => {
+        console.log(tipo)
+        if (tipo === null) alert('Selecione um estado para esta tarefa!');
+        else handleSalvarEstado()
+    }
 
     const handleSalvarEstado = () => {
         TasksCollection.update(id, {
@@ -38,6 +45,7 @@ export const ViewTask = () => {
                 situation: tipo
             }
         });
+        console.log('não devia estar aqui!')
         alert('Estadus da tarefa alterado para: ' + tipo);
     }
 
@@ -99,9 +107,7 @@ export const ViewTask = () => {
                 </div>
                 <div>
                     <Autocomplete
-                        value={
-                            tipo
-                        }
+                        value={estado}
                         onChange={(event, newTipo) => {
                             setTipo(newTipo);
                         }}
@@ -112,7 +118,7 @@ export const ViewTask = () => {
                         id="controllable-states-demo"
                         options={options}
                         renderInput={(params) => <TextField {...params} label="Estado da tarefa" />}
-                    /> <Button variant='contained' color='warning' onClick={handleSalvarEstado}>Salvar estado</Button>
+                    /> <Button variant='contained' color='warning' onClick={handleValidarEstado}>Salvar estado</Button>
                 </div>
                 {(userID === task.createdBy) &&
                     <Link to={`/main/tasks/edit/${id}`} style={{ textDecoration: 'none', color: 'white' }}>
