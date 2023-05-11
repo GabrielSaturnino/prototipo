@@ -15,6 +15,7 @@ import { Accounts } from 'meteor/accounts-base';
 import { Meteor } from 'meteor/meteor';
 
 import base64Image from './defaultImg';
+import '../../api/userMethods';
 
 
 const style = {
@@ -30,17 +31,15 @@ export const NewAccount = () => {
   const users = useTracker(() => UsersCollection.find({}).fetch());
 
   const handleSignIn = e => {
-
     const data = {
       name: e.target.elements.name.value,
       email: e.target.elements.email.value,
       empresa: e.target.elements.empresa.value,
       password: e.target.elements.password.value,
       date: e.target.elements.date.value,
-      gender: e.target.elements.gender.value
+      gender: e.target.elements.gender.value,
+      profilePic: base64Image
     }
-
-    console.log(base64Image);
 
     let validate = handleValidate(data);
 
@@ -49,6 +48,7 @@ export const NewAccount = () => {
       alert(validate);
     } else validate = handleVerifyExistentUser(data);
 
+    console.log(validate);
     if (validate === '') {
       handleCreateUser(data);
     } else {

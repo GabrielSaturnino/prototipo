@@ -24,13 +24,12 @@ export default function Profile() {
   const [image, setImage] = useState('');
 
   const currentUser = Meteor.user();
-
+  const nomeUser = UsersCollection.findOne({ email: currentUser.emails[0].address });
 
   const [genero, setGenero] = React.useState(options[0]);
   const [inputGenero, setInputGenero] = React.useState('');
 
-
-  const [nome, setNome] = useState(currentUser.username);
+  const [nome, setNome] = useState(nomeUser.name);
   const [email, setEmail] = useState(currentUser.emails[0].address);
   const [data, setData] = useState(currentUser.profile.date);
   const [sexo, setSexo] = useState(currentUser.profile.gender);
@@ -49,7 +48,6 @@ export default function Profile() {
   let novaData = date.split('-');
 
   if (image === '') {
-    console.log('to entrando aqui!');
     const userImage = userData.profileImg;
     setImage(userImage);
   }
@@ -71,11 +69,13 @@ export default function Profile() {
 
     UsersCollection.update(userData._id, {
       $set: {
-        name: nome
+        name: nome,
+        profileImg: image
       }
     });
 
     Meteor.call('atualizarDadosUsuario', data, genero, empresa);
+    setEdit(false);
   }
 
   const handleConvertBase64 = e => {
@@ -93,7 +93,6 @@ export default function Profile() {
         profileImg: image
       }
     });
-    console.log(image)
     reader.readAsDataURL(file);
   }
 
