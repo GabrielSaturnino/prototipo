@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useTracker } from 'meteor/react-meteor-data';
 import { TasksCollection } from '../../../api/task';
@@ -6,17 +6,35 @@ import { Meteor } from 'meteor/meteor';
 
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 
 export const ViewTask = () => {
 
+    //var options = ['Criada', 'Iniciada', 'Finalizada'];
+
+    const [options, setOptions] = useState(['Criada', 'Iniciada', 'Finalizada']);
+
     const userID = Meteor.userId();
     const tasks = useTracker(() => TasksCollection.find().fetch());
     const { id } = useParams();
 
+    const [tipo, setTipo] = React.useState(options[0]);
+    const [inputTipo, setInputTipo] = React.useState('');
+
     const task = TasksCollection.findOne({ _id: id });
+
+    const handleSalvarEstado = () => {
+        console.log(tipo);
+        //console.log(task);
+        console.log(options);
+
+        if (tipo === 'Criada') setOptions(['Criada', 'Iniciada']);
+        if (tipo === 'Iniciada') setOptions(['Iniciada', 'Criada', 'Finalizada']);
+        if (tipo === 'Finalizada') setOptions(['Iniciada', 'Finalizada']);
+    }
 
     return (
         <Box
@@ -75,15 +93,19 @@ export const ViewTask = () => {
                     />
                 </div>
                 <div>
-                    <Typography variant='body1'>Situação da tarefa:</Typography>
-                    <TextField
-                        id="outlined-read-only-input"
-                        defaultValue={task.situation}
-                        sx={{ width: '100%' }}
-                        InputProps={{
-                            readOnly: true,
+                    <Autocomplete
+                        value={tipo}
+                        onChange={(event, newTipo) => {
+                            setTipo(newTipo);
                         }}
-                    />
+                        inputValue={inputTipo}
+                        onInputChange={(event, newInputTipo) => {
+                            setInputTipo(newInputTipo);
+                        }}
+                        id="controllable-states-demo"
+                        options={options}
+                        renderInput={(params) => <TextField {...params} label="Estado da tarefa" />}
+                    /> <Button variant='contained' color='warning' onClick={handleSalvarEstado}>Salvar estado</Button>
                 </div>
                 {(userID === task.createdBy) &&
                     <Link to={`/main/tasks/edit/${id}`} style={{ textDecoration: 'none', color: 'white' }}>

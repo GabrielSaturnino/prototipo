@@ -14,7 +14,7 @@ Meteor.startup(async () => {
   if (UsersCollection.find().count() === 0) {
     [
       "Primeiro usuario"
-    ].forEach(addTask);
+    ].forEach(addUser);
   }
 
   if (!Accounts.findUserByUsername(SEED_USERNAME)) {

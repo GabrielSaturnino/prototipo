@@ -1,15 +1,24 @@
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button';
 import { TasksCollection } from '../../../api/task';
 import { Meteor } from 'meteor/meteor';
 import { Navigate } from 'react-router'
 
+const options = ['Publica', 'Pessoal'];
+
 export default function NewTask() {
 
   const [redirect, setRedirect] = useState(false);
   const user = Meteor.user();
+
+  const [tipo, setTipo] = React.useState(options[0]);
+  const [inputTipo, setInputTipo] = React.useState('');
+
+  console.log(tipo);
+
 
   const handleCreatTask = e => {
     e.preventDefault();
@@ -20,6 +29,7 @@ export default function NewTask() {
       createdAt: new Date(),
       createdBy: user._id,
       userName: user.username,
+      tipo: tipo,
       situation: 'created'
     }
 
@@ -78,14 +88,30 @@ export default function NewTask() {
             display: 'flex',
             justifyContent: 'space-between'
           }}>
+
+            <Autocomplete
+              value={tipo}
+              onChange={(event, newTipo) => {
+                setTipo(newTipo);
+              }}
+              inputValue={inputTipo}
+              onInputChange={(event, newInputTipo) => {
+                setInputTipo(newInputTipo);
+              }}
+              id="controllable-states-demo"
+              options={options}
+              sx={{ width: 300 }}
+              renderInput={(params) => <TextField {...params} label="Tipo da tarefa" />}
+            />
+
             <Button
               variant="contained"
-              sx={{ background: 'green' }}
+              color='success'
               type='submit'
             >Salvar</Button>
             <Button
               variant="contained"
-              sx={{ background: 'red' }}
+              color='error'
               onClick={handleRedirect}
             >Cancelar</Button>
           </Box>
