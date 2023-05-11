@@ -30,7 +30,7 @@ export default function NewTask() {
       createdBy: user._id,
       userName: user.username,
       tipo: tipo,
-      situation: 'created'
+      situation: 'Criada'
     }
 
     TasksCollection.insert(task);

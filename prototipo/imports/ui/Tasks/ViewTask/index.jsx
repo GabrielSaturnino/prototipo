@@ -13,27 +13,32 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 
 export const ViewTask = () => {
 
-    //var options = ['Criada', 'Iniciada', 'Finalizada'];
-
-    const [options, setOptions] = useState(['Criada', 'Iniciada', 'Finalizada']);
-
     const userID = Meteor.userId();
     const tasks = useTracker(() => TasksCollection.find().fetch());
     const { id } = useParams();
 
+    const task = TasksCollection.findOne({ _id: id });
+    const estado = task.situation;
+
+    const options0 = ['Criada', 'Iniciada'];
+    const options1 = ['Criada', 'Iniciada', 'Finalizada'];
+    const options2 = ['Iniciada', 'Finalizada'];
+    let options = options1;
+
     const [tipo, setTipo] = React.useState(options[0]);
     const [inputTipo, setInputTipo] = React.useState('');
 
-    const task = TasksCollection.findOne({ _id: id });
+    if (estado === 'Criada') options = options0;
+    if (estado === 'Iniciada') options = options1;
+    if (estado === 'Finalizada') options = options1;
 
     const handleSalvarEstado = () => {
-        console.log(tipo);
-        //console.log(task);
-        console.log(options);
-
-        if (tipo === 'Criada') setOptions(['Criada', 'Iniciada']);
-        if (tipo === 'Iniciada') setOptions(['Iniciada', 'Criada', 'Finalizada']);
-        if (tipo === 'Finalizada') setOptions(['Iniciada', 'Finalizada']);
+        TasksCollection.update(id, {
+            $set: {
+                situation: tipo
+            }
+        });
+        alert('Estadus da tarefa alterado para: ' + tipo);
     }
 
     return (
@@ -94,7 +99,9 @@ export const ViewTask = () => {
                 </div>
                 <div>
                     <Autocomplete
-                        value={tipo}
+                        value={
+                            tipo
+                        }
                         onChange={(event, newTipo) => {
                             setTipo(newTipo);
                         }}
