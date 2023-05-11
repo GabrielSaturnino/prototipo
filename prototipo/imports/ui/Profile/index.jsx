@@ -14,6 +14,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
+import '../../api/userMethods';
 
 const options = ['Masculino', 'Feminino', 'Outros'];
 
@@ -43,8 +44,7 @@ export default function Profile() {
   const originalEmpresa = currentUser.profile.empresa;
 
   const date = currentUser.profile.date;
-  const emails = currentUser.emails[0].address;
-  const userData = UsersCollection.findOne({ email: emails });
+  const userData = UsersCollection.findOne({ email: email });
 
   let novaData = date.split('-');
 
@@ -68,20 +68,14 @@ export default function Profile() {
   }
 
   const handleSalvar = () => {
-    if (!nome) alert('Informe seu nome');
-    else if (!email) alert('Informe seu email');
-    else if (!empresa) alert('Informe a empresa em que trabalha');
-    else {
 
-      UsersCollection.update(userData._id, {
-        $set: {
-          name: nome
-        }
-      });
-      setEdit(false);
-    }
+    UsersCollection.update(userData._id, {
+      $set: {
+        name: nome
+      }
+    });
 
-
+    Meteor.call('atualizarDadosUsuario', data, genero, empresa);
   }
 
   const handleConvertBase64 = e => {
