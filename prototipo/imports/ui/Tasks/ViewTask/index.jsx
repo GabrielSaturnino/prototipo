@@ -91,6 +91,10 @@ export const ViewTask = () => {
                             <ModeEditIcon fontSize='medium' sx={{ marginLeft: '5px' }} /></Button>
                     </Link>
                 }
+                <Link to={`/main/tasks`} style={{ textDecoration: 'none', color: 'white' }}>
+                    <Button variant="contained" color='success'>Voltar
+                    </Button>
+                </Link>
             </Box>
         </Box>
     );
