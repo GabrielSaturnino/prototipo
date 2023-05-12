@@ -18,15 +18,19 @@ export default function AllTasks() {
   const userId = Meteor.userId();
 
   const [tipo, setTipo] = useState('All');
-
   const [estado, setEstado] = React.useState(options[0]);
   const [inputEstado, setInputEstado] = React.useState('');
-
   const [taskList, setTaskList] = useState([]);
 
+
   let tasks = useTracker(() => TasksCollection.find({ tipo: 'Publica' }).fetch());
-  let personalTasks = useTracker(() => TasksCollection.find({ createdBy: userId }).fetch());
-  console.log('TaskList: ' + taskList)
+  //let personalTasks = Meteor.subscribe('tasksPessoais');
+  // if (!personalTasks.ready()) {
+  //   return { ...noDataAvailable, isLoading: true };
+  // }
+  //let personalTasks = useTracker(() => TasksCollection.find({ createdBy: userId }).fetch());
+
+  console.log(personalTasks)
 
   useEffect(() => {
     setTaskList(tasks);
