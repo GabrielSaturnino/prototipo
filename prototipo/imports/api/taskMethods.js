@@ -1,9 +1,34 @@
 import { Meteor } from 'meteor/meteor';
-import { check } from 'meteor/check';
 import { TasksCollection } from './task';
 
 Meteor.methods({
-    'allTasks'() {
+    'createTask'(name, desc, createdBy, userName, tipo) {
 
+        if (!this.userId) {
+            throw new Meteor.Error('Not authorized.');
+        }
+
+        TasksCollection.insert({
+            name: name,
+            desc: desc,
+            createdAt: new Date(),
+            createdBy: createdBy,
+            userName: userName,
+            tipo: tipo,
+            situation: 'Criada'
+        })
+    },
+
+    'editTask'(id, desc, name) {
+
+        if (!this.userId) {
+            throw new Meteor.Error('Not authorized.');
+        }
+
+        TasksCollection.update(id, { $set: { desc: desc, name: name } });
+    },
+
+    'deleteTask'(id) {
+        TasksCollection.remove(id);
     }
 })

@@ -25,7 +25,7 @@ export const TaskCard = tasks => {
     const handleDelete = (e) => {
         e.preventDefault();
         const id = tasks.tasks._id;
-        if (user._id === tasks.tasks.createdBy) TasksCollection.remove(id);
+        if (user._id === tasks.tasks.createdBy) Meteor.call('deleteTask', id);
         else alert('Somente o criador da tarefa pode apaga-la');
     }
 

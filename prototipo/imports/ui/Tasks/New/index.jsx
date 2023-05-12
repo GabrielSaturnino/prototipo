@@ -30,7 +30,8 @@ export default function NewTask() {
       situation: 'Criada'
     }
 
-    TasksCollection.insert(task);
+    Meteor.call('createTask', task.name, task.desc, task.createdBy,
+      task.userName, task.tipo, task.situation);
 
     alert('Tarefa criada!');
     handleRedirect();

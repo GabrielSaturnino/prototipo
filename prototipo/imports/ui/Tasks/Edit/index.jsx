@@ -37,7 +37,7 @@ export default function EditTask() {
     if (data.name === '' && data.desc === '') return 'Preencha algum campo para editar!';
     else if (data.name === '') TasksCollection.update(id, { $set: { desc: data.desc } });
     else if (data.desc === '') TasksCollection.update(id, { $set: { name: data.name } });
-    else TasksCollection.update(id, { $set: { desc: data.desc, name: data.name } });
+    Meteor.call('editTask', id, data.desc, data.name);
     alert('Dados atualizados');
   }
 
