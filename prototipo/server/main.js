@@ -23,4 +23,15 @@ Meteor.startup(async () => {
       password: SEED_PASSWORD,
     });
   }
-});
+
+  if (TasksCollection.find().count() === 0) {
+    TasksCollection.insert({
+      name: 'taskTest',
+      desc: 'taskvalue',
+      createdAt: new Date(),
+      createdBy: '26sadadf',
+      userName: 'asdf54',
+      tipo: 'sdf5',
+      situation: 'Criada'
+    })
+  });

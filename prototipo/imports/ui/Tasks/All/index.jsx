@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -22,24 +22,40 @@ export default function AllTasks() {
   const [estado, setEstado] = React.useState(options[0]);
   const [inputEstado, setInputEstado] = React.useState('');
 
+  const [taskList, setTaskList] = useState([]);
+
   let tasks = useTracker(() => TasksCollection.find({ tipo: 'Publica' }).fetch());
-  const personalTasks = useTracker(() => TasksCollection.find({ createdBy: userId }).fetch());
+  let personalTasks = useTracker(() => TasksCollection.find({ createdBy: userId }).fetch());
+  console.log('TaskList: ' + taskList)
+
+  useEffect(() => {
+    setTaskList(tasks);
+
+    switch (tipo) {
+      case 'Pessoal':
+        console.log('Pessoal');
+        break;
+      case 'All':
+        console.log('Todas');
+        break;
+    }
+
+    if (estado === 'Criada') {
+      tasks = TasksCollection.find({ tipo: 'Publica', situation: 'Criada' }).fetch();
+      setTaskList(tasks);
+    }
+    if (estado === 'Iniciada') {
+      tasks = TasksCollection.find({ tipo: 'Publica', situation: 'Iniciada' }).fetch();
+      setTaskList(tasks);
+    }
+    if (estado === 'Finalizada') {
+      tasks = TasksCollection.find({ tipo: 'Publica', situation: 'Finalizada' }).fetch();
+      setTaskList(tasks);
+    }
+  }, [estado])
+
 
   if (estado === null) setEstado('Qualquer');
-  if (estado !== 'Qualquer') {
-    let tasksComEstado = useTracker(() =>
-      TasksCollection.find({ tipo: 'Publica', situation: estado }).fetch());
-
-    const personalTasksComEstadp = useTracker(() =>
-      TasksCollection.find({ createdBy: userId, situation: estado }).fetch());
-  }
-
-  // let tasks = useTracker(() => TasksCollection.find({ tipo: 'Publica' }).fetch());
-  // const personalTasks = useTracker(() => TasksCollection.find({ createdBy: userId }).fetch());
-
-  if (estado === 'Criada') console.log('criada');
-  if (estado === 'Iniciada') console.log('Iniciada');
-  if (estado === 'Finalizada') console.log('Finalizada');
 
   const handlePersonalTasks = () => {
     setTipo('Pessoal');
@@ -98,7 +114,7 @@ export default function AllTasks() {
         }}
       >
         {tipo === 'All' ?
-          tasks.map(task => <TaskCard key={task._id} tasks={task} />)
+          taskList.map(task => <TaskCard key={task._id} tasks={task} />)
           :
           personalTasks.map(task => <TaskCard key={task._id} tasks={task} />)
         }
