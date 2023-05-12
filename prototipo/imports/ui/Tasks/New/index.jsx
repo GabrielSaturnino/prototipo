@@ -17,9 +17,6 @@ export default function NewTask() {
   const [tipo, setTipo] = React.useState(options[0]);
   const [inputTipo, setInputTipo] = React.useState('');
 
-  console.log(tipo);
-
-
   const handleCreatTask = e => {
     e.preventDefault();
 
