@@ -24,6 +24,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 
 import { Outlet, Link } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
+import { UsersCollection } from '../../api/users';
 
 const drawerWidth = 240;
 
@@ -98,6 +99,12 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export const Main = () => {
+  const currentUser = Meteor.user();
+  const nomeUser = UsersCollection.findOne({ email: currentUser.emails[0].address });
+  const firstName = nomeUser.name.split(' ');
+
+  const userImg = nomeUser.profileImg;
+
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -145,6 +152,30 @@ export const Main = () => {
 
         <Divider />
         <List>
+
+          <ListItem disablePadding sx={{ display: 'block' }}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : 'auto',
+                  justifyContent: 'center',
+                }}
+              >
+                <img style={{ height: '25px', width: '25px', borderRadius: '50%', }} src={userImg} />
+              </ListItemIcon>
+              <ListItemText primary={currentUser.emails[0].address}
+                secondary={firstName[0]}
+                sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
+
           <ListItem disablePadding sx={{ display: 'block' }}>
             <Link
               to={'/main/home'}
