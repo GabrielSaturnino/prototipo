@@ -69,37 +69,47 @@ export const Login = () => {
   }
 
   return (
-    <Form onSubmit={handleSignIn} action='/main/home'>
-      <Container sx={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-        <Box
-          component="div"
-          sx={{
-            '& .MuiTextField-root': { m: 1, width: '25ch' }, display: 'flex', flexDirection: 'column',
-          }}
-          autoComplete="on"
-        >
 
-          <TextField
-            required
-            id="outlined-required"
-            type='email'
-            name='email'
-            placeholder='example@email.com'
-          />
-          <TextField
-            required
-            id="outlined-disabled"
-            type='password'
-            name='password'
-            placeholder='Password'
-          />
-          <Button variant="contained" type='submit'>
-            Logar
-          </Button>
-          <Typography variant='p'>clique <Link to={'/new'}>aqui</Link> para criar sua conta</Typography>
+    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '15px' }}>
+      <Typography variant='h1' sx={{
+        textAlign: 'center',
+        fontSize: '3em'
+      }}>Bem vindo ao todo list</Typography>
+      <Form onSubmit={handleSignIn} action='/main/home'>
+        <Container sx={{ width: '320px' }}>
+          <Box
+            component="div"
+            sx={{
+              '& .MuiTextField-root': { m: 1, width: '100%' }, display: 'flex', flexDirection: 'column',
+            }}
+            autoComplete="on"
+          >
 
-        </Box>
-      </Container >
-    </Form >
+            <TextField
+              required
+              id="outlined-required"
+              type='email'
+              name='email'
+              placeholder='example@email.com'
+            />
+            <TextField
+              required
+              id="outlined-disabled"
+              type='password'
+              name='password'
+              placeholder='Password'
+            />
+
+            <Button variant="contained" type='submit' sx={{ m: 1, width: '100%' }}>
+              Logar
+            </Button>
+            <Typography variant='p' sx={{ m: 1 }}>clique <Link to={'/new'}>aqui</Link> para criar sua conta</Typography>
+
+          </Box>
+
+        </Container >
+      </Form >
+    </Box>
+
   );
 }

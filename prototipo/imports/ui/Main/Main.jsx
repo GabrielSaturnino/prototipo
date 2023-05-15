@@ -131,7 +131,7 @@ export const Main = () => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            To-Do list
+            📝️ To Do List
           </Typography>
         </Toolbar>
       </AppBar>

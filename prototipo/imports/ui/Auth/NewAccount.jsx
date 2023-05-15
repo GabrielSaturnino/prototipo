@@ -1,7 +1,7 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import { Container } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -14,6 +14,8 @@ import { Form } from 'react-router-dom';
 import { Accounts } from 'meteor/accounts-base';
 import { Meteor } from 'meteor/meteor';
 
+import { Link } from 'react-router-dom';
+
 import base64Image from './defaultImg';
 import '../../api/userMethods';
 
@@ -23,7 +25,7 @@ const style = {
     height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'
   },
   form: {
-    '& .MuiTextField-root': { m: 1, width: '25ch' }, display: 'flex', flexDirection: 'column',
+    '& .MuiTextField-root': { m: 1, width: '100%' }, display: 'flex', flexDirection: 'column',
   }
 }
 
@@ -103,65 +105,79 @@ export const NewAccount = () => {
   }
 
   return (
-    <Form onSubmit={handleSignIn} action='/'>
-      <Container sx={style.container}>
-        <Box
-          component="div"
-          sx={style.form}
-          autoComplete="on"
-        >
 
-          <TextField
-            required
-            type='text'
-            name='name'
-            placeholder='Digite seu nome'
-          />
+    <Box sx={style.container}>
+      <Typography variant='h1' sx={{
+        textAlign: 'center',
+        fontSize: '2.5em'
+      }}>Preencha o formulario</Typography>
 
-          <TextField
-            required
-            type='email'
-            name='email'
-            placeholder='Digite seu E-mail'
-          />
-
-          <TextField
-            required
-            type='text'
-            name='empresa'
-            placeholder='Empresa em que trabalha'
-          />
-
-          <TextField
-            required
-            type='password'
-            name='password'
-            placeholder='Password'
-          />
-
-          <TextField
-            required
-            type='date'
-            name='date'
-          />
-
-          <FormLabel id="radio-buttons-group-label">Gender</FormLabel>
-          <RadioGroup
-            aria-labelledby="radio-buttons-group-label"
-            defaultValue="Feminino"
-            name="radio-buttons-group"
+      <Form onSubmit={handleSignIn} action='/'>
+        <Container sx={{ width: '320px' }}>
+          <Box
+            component="div"
+            sx={style.form}
+            autoComplete="on"
           >
-            <FormControlLabel value="Feminino" name='gender' control={<Radio />} label="Feminino" />
-            <FormControlLabel value="Masculino" name='gender' control={<Radio />} label="Masculino" />
-            <FormControlLabel value="Outro" name='gender' control={<Radio />} label="Outro" />
-          </RadioGroup>
 
-          <Button variant="contained" type='submit'>
-            Cadastrar
-          </Button>
+            <TextField
+              required
+              type='text'
+              name='name'
+              placeholder='Digite seu nome'
+            />
 
-        </Box>
-      </Container>
-    </Form>
+            <TextField
+              required
+              type='email'
+              name='email'
+              placeholder='Digite seu E-mail'
+            />
+
+            <TextField
+              required
+              type='text'
+              name='empresa'
+              placeholder='Empresa em que trabalha'
+            />
+
+            <TextField
+              required
+              type='password'
+              name='password'
+              placeholder='Password'
+            />
+
+            <TextField
+              required
+              type='date'
+              name='date'
+            />
+            <Box sx={{ m: 1 }}>
+              <FormLabel id="radio-buttons-group-label">Gender</FormLabel>
+              <RadioGroup
+                aria-labelledby="radio-buttons-group-label"
+                defaultValue="Feminino"
+                name="radio-buttons-group"
+              >
+                <FormControlLabel value="Feminino" name='gender' control={<Radio />} label="Feminino" />
+                <FormControlLabel value="Masculino" name='gender' control={<Radio />} label="Masculino" />
+                <FormControlLabel value="Outro" name='gender' control={<Radio />} label="Outro" />
+              </RadioGroup>
+            </Box>
+
+            <Button variant="contained" type='submit' sx={{ m: 1, width: '100%' }}>
+              Cadastrar
+            </Button>
+
+            <Button color='error' variant="contained" type='submit' sx={{ m: 1, width: '100%' }}>
+              <Link to={'/'} style={{ textDecoration: 'none', color: 'white' }}>Cancelar</Link>
+            </Button>
+
+          </Box>
+        </Container>
+      </Form>
+    </Box>
+
   );
 }
