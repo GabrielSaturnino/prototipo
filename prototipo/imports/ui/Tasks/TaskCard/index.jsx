@@ -68,7 +68,7 @@ export const TaskCard = tasks => {
                             }}
                         >
                             <Typography variant='h4'>
-                                {tasks.tasks.createdAt.getHours()}:{tasks.tasks.createdAt.getMinutes()}- {tasks.tasks.name}</Typography>
+                                {tasks.tasks.createdAt.getHours()}:{tasks.tasks.createdAt.getMinutes()} - {tasks.tasks.name}</Typography>
                             <Typography variant='span'>Criado por: {tasks.tasks.userName}</Typography>
                             <Typography variant='body1'>{tasks.tasks.situation}</Typography>
                         </Box>
