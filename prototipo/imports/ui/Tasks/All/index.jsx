@@ -20,44 +20,33 @@ export default function AllTasks() {
   const [tipo, setTipo] = useState('All');
   const [estado, setEstado] = React.useState(options[0]);
   const [inputEstado, setInputEstado] = React.useState('');
-  const [taskList, setTaskList] = useState([]);
+  const [textInput, setTextInput] = useState('');
 
+  let { listaTarefas, personalTasks, isLoading } = useTracker(() => {
+    let listaTarefas = [];
+    let personalTasks = [];
+    let isLoading = false;
 
-  let tasks = useTracker(() => TasksCollection.find({ tipo: 'Publica' }).fetch());
-  //let personalTasks = Meteor.subscribe('tasksPessoais');
-  // if (!personalTasks.ready()) {
-  //   return { ...noDataAvailable, isLoading: true };
-  // }
-  //let personalTasks = useTracker(() => TasksCollection.find({ createdBy: userId }).fetch());
+    const handler = Meteor.subscribe('tasks');
 
-  console.log(personalTasks)
-
-  useEffect(() => {
-    setTaskList(tasks);
-
-    switch (tipo) {
-      case 'Pessoal':
-        console.log('Pessoal');
-        break;
-      case 'All':
-        console.log('Todas');
-        break;
+    if (!handler.ready()) {
+      isLoading = true;
     }
 
-    if (estado === 'Criada') {
-      tasks = TasksCollection.find({ tipo: 'Publica', situation: 'Criada' }).fetch();
-      setTaskList(tasks);
+    if (estado === 'Qualquer' && tipo === 'All') {
+      listaTarefas = TasksCollection.find({ tipo: "Publica" }).fetch();
+    } else if (estado !== 'Qualquer' && tipo === 'All') {
+      listaTarefas = TasksCollection.find({ tipo: "Publica" }).fetch();
     }
-    if (estado === 'Iniciada') {
-      tasks = TasksCollection.find({ tipo: 'Publica', situation: 'Iniciada' }).fetch();
-      setTaskList(tasks);
-    }
-    if (estado === 'Finalizada') {
-      tasks = TasksCollection.find({ tipo: 'Publica', situation: 'Finalizada' }).fetch();
-      setTaskList(tasks);
-    }
-  }, [estado])
 
+    if (estado === 'Qualquer' && tipo === 'Pessoal') {
+      personalTasks = TasksCollection.find({ createdBy: userId }).fetch();
+    } else if (estado !== 'Qualquer' && tipo === 'Pessoal') {
+      personalTasks = TasksCollection.find({ createdBy: userId, situation: estado }).fetch();
+    }
+
+    return { listaTarefas, personalTasks, isLoading };
+  });
 
   if (estado === null) setEstado('Qualquer');
 
@@ -68,9 +57,11 @@ export default function AllTasks() {
   const handleAllTasks = () => {
     setTipo('All');
   }
+  console.log(textInput);
 
   return (
     <>
+
       {tipo === 'All' ?
         <Typography variant='h2' sx={{ textAlign: 'center' }}>Lista de Tarefas</Typography >
         :
@@ -96,6 +87,11 @@ export default function AllTasks() {
         onClick={handleAllTasks}
         sx={{ m: '20px 0 20px 5px' }}
       >Todas as tarefas</Button>
+
+      <input type="search" style={{ margin: 'auto' }}
+        onChange={e => setTextInput(e.target.value)}
+      />
+
       <Autocomplete
         value={estado}
         onChange={(event, newEstado) => {
@@ -117,13 +113,19 @@ export default function AllTasks() {
           overflowY: 'scroll'
         }}
       >
-        {tipo === 'All' ?
-          taskList.map(task => <TaskCard key={task._id} tasks={task} />)
+        {isLoading ? <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+          fontWeight: 'bold'
+        }}>loading...</div> : tipo === 'All' ?
+          listaTarefas.map(task => <TaskCard key={task._id} tasks={task} />)
           :
           personalTasks.map(task => <TaskCard key={task._id} tasks={task} />)
         }
       </Box>
     </>
-
   );
 }

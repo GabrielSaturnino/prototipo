@@ -148,9 +148,11 @@ export const Main = () => {
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
+
         </DrawerHeader>
 
         <Divider />
+
         <List>
 
           <ListItem disablePadding sx={{ display: 'block' }}>
@@ -175,6 +177,8 @@ export const Main = () => {
                 sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
+
+          <Divider />
 
           <ListItem disablePadding sx={{ display: 'block' }}>
             <Link

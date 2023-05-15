@@ -29,6 +29,16 @@ export const TaskCard = tasks => {
         else alert('Somente o criador da tarefa pode apaga-la');
     }
 
+    let situation = tasks.tasks.situation;
+    let cor = '';
+    if (situation === 'Criada') {
+        cor = 'lightyellow';
+    } else if (situation === 'Iniciada') {
+        cor = '#EAB972';
+    } else if (situation === 'Finalizada') {
+        cor = '#75C272';
+    }
+
     return (
         <Link to={`/main/tasks/view/${tasks.tasks._id}`} style={{ textDecoration: 'none', color: 'black' }}>
             <List sx={{ width: '100%' }}>
@@ -37,7 +47,7 @@ export const TaskCard = tasks => {
                         component={'div'}
                         sx={{
 
-                            background: 'pink',
+                            background: cor,
                             borderRadius: '5px',
                             width: '100%',
                             height: '150px',
@@ -60,17 +70,19 @@ export const TaskCard = tasks => {
                             <Typography variant='h4'>
                                 {tasks.tasks.createdAt.getHours()}:{tasks.tasks.createdAt.getMinutes()}- {tasks.tasks.name}</Typography>
                             <Typography variant='span'>Criado por: {tasks.tasks.userName}</Typography>
+                            <Typography variant='body1'>{tasks.tasks.situation}</Typography>
                         </Box>
                         <div style={{
                             width: '150px',
                             height: '50px',
                             marginTop: '20px'
-                        }}><Button
-                            sx={{ boxShadow: '3px 3px solid black' }}
-                            color="error"
-                            variant="contained"
-                            startIcon={<DeleteIcon />}
-                            onClick={handleDelete}>
+                        }}>
+                            <Button
+                                sx={{ boxShadow: '3px 3px solid black' }}
+                                color="error"
+                                variant="contained"
+                                startIcon={<DeleteIcon />}
+                                onClick={handleDelete}>
                                 Delete
                             </Button></div>
                         <Divider variant="inset" component="li" />
