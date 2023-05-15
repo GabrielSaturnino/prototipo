@@ -36,7 +36,7 @@ export default function AllTasks() {
     if (estado === 'Qualquer' && tipo === 'All') {
       listaTarefas = TasksCollection.find({ tipo: "Publica" }).fetch();
     } else if (estado !== 'Qualquer' && tipo === 'All') {
-      listaTarefas = TasksCollection.find({ tipo: "Publica" }).fetch();
+      listaTarefas = TasksCollection.find({ tipo: "Publica", situation: estado }).fetch();
     }
 
     if (estado === 'Qualquer' && tipo === 'Pessoal') {
@@ -88,9 +88,13 @@ export default function AllTasks() {
         sx={{ m: '20px 0 20px 5px' }}
       >Todas as tarefas</Button>
 
-      <input type="search" style={{ margin: 'auto' }}
-        onChange={e => setTextInput(e.target.value)}
-      />
+      <div style={{ marginBottom: '35px', textAlign: 'center' }}>
+        <input type="search"
+          placeholder='Pesquise por tarefas'
+          style={{ height: '40px', padding: '5px', width: '320px', fontSize: '1.5em' }}
+          onChange={e => setTextInput(e.target.value)}
+        />
+      </div>
 
       <Autocomplete
         value={estado}
