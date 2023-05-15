@@ -22,9 +22,9 @@ export default function AllTasks() {
   const [inputEstado, setInputEstado] = React.useState('');
   const [textInput, setTextInput] = useState('');
 
-  let { listaTarefas, personalTasks, isLoading } = useTracker(() => {
-    let listaTarefas = [];
-    let personalTasks = [];
+  let { listaTarefas, personalTasks, isLoading, filteredPost, filteredPersonalPost } = useTracker(() => {
+    let listaTarefas = TasksCollection.find({ tipo: "Publica" }).fetch();
+    let personalTasks = TasksCollection.find({ createdBy: userId }).fetch();
     let isLoading = false;
 
     const handler = Meteor.subscribe('tasks');
@@ -33,22 +33,49 @@ export default function AllTasks() {
       isLoading = true;
     }
 
+    // Tarefas Publicas
     if (estado === 'Qualquer' && tipo === 'All') {
       listaTarefas = TasksCollection.find({ tipo: "Publica" }).fetch();
     } else if (estado !== 'Qualquer' && tipo === 'All') {
       listaTarefas = TasksCollection.find({ tipo: "Publica", situation: estado }).fetch();
     }
 
+    // Tarefas Pessoais
     if (estado === 'Qualquer' && tipo === 'Pessoal') {
       personalTasks = TasksCollection.find({ createdBy: userId }).fetch();
     } else if (estado !== 'Qualquer' && tipo === 'Pessoal') {
       personalTasks = TasksCollection.find({ createdBy: userId, situation: estado }).fetch();
     }
 
-    return { listaTarefas, personalTasks, isLoading };
+    // Buscando Tarefas Publicas
+    let filteredPost = !!textInput ?
+      listaTarefas.filter(task => {
+        return task.name.toLowerCase().includes(
+          textInput.toLowerCase()
+        );
+      })
+      :
+      listaTarefas;
+
+    // Buscando Tarefas Pessoais
+    let filteredPersonalPost = !!textInput ?
+      personalTasks.filter(task => {
+        return task.name.toLowerCase().includes(
+          textInput.toLowerCase()
+        );
+      })
+      :
+      personalTasks;
+
+    return { listaTarefas, personalTasks, isLoading, filteredPost, filteredPersonalPost };
   });
 
   if (estado === null) setEstado('Qualquer');
+
+  const handleChange = e => {
+    let { value } = e.target;
+    setTextInput(value);
+  }
 
   const handlePersonalTasks = () => {
     setTipo('Pessoal');
@@ -57,7 +84,6 @@ export default function AllTasks() {
   const handleAllTasks = () => {
     setTipo('All');
   }
-  console.log(textInput);
 
   return (
     <>
@@ -92,7 +118,8 @@ export default function AllTasks() {
         <input type="search"
           placeholder='Pesquise por tarefas'
           style={{ height: '40px', padding: '5px', width: '320px', fontSize: '1.5em' }}
-          onChange={e => setTextInput(e.target.value)}
+          onChange={handleChange}
+          value={textInput}
         />
       </div>
 
@@ -125,9 +152,9 @@ export default function AllTasks() {
           alignItems: 'center',
           fontWeight: 'bold'
         }}>loading...</div> : tipo === 'All' ?
-          listaTarefas.map(task => <TaskCard key={task._id} tasks={task} />)
+          filteredPost.map(task => <TaskCard key={task._id} tasks={task} />)
           :
-          personalTasks.map(task => <TaskCard key={task._id} tasks={task} />)
+          filteredPersonalPost.map(task => <TaskCard key={task._id} tasks={task} />)
         }
       </Box>
     </>
