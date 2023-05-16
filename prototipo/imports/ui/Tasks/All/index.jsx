@@ -25,9 +25,10 @@ export default function AllTasks() {
   const [inputEstado, setInputEstado] = React.useState('');
   const [textInput, setTextInput] = useState('');
   const [pages, setPages] = useState(1);
+  const [personalPages, setPersonalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
 
-  let { listaTarefas, personalTasks, isLoading, filteredPost, filteredPersonalPost, totalTasks } = useTracker(() => {
+  let { listaTarefas, personalTasks, isLoading, filteredPost, filteredPersonalPost, totalTasks, totalPersonalTasks } = useTracker(() => {
     //let listaTarefas = TasksCollection.find({ tipo: "Publica" }).fetch();
     let listaTarefas = [];
     let personalTasks = TasksCollection.find({ createdBy: userId }).fetch();
@@ -39,7 +40,8 @@ export default function AllTasks() {
       isLoading = true;
     }
 
-    let totalTasks = TasksCollection.find({}).count();
+    let totalTasks = TasksCollection.find({ tipo: "Publica" }).count();
+    let totalPersonalTasks = TasksCollection.find({ tipo: "Pessoal" }).count();
 
     //itens por pagina
     const itensPerPage = 4;
@@ -89,13 +91,15 @@ export default function AllTasks() {
       :
       personalTasks;
 
-    return { listaTarefas, personalTasks, isLoading, filteredPost, filteredPersonalPost, totalTasks };
+    return { listaTarefas, personalTasks, isLoading, filteredPost, filteredPersonalPost, totalTasks, totalPersonalTasks };
   });
 
   useEffect(() => {
     const numberOfPages = Math.ceil(totalTasks / 4);
+    const numberOfPersonalPages = Math.ceil(totalPersonalTasks / 4);
 
     setPages(numberOfPages);
+    setPersonalPages(numberOfPersonalPages);
 
   }, [totalTasks]);
 
@@ -172,7 +176,7 @@ export default function AllTasks() {
       <Box
         sx={{
           width: '100%',
-          height: '500px',
+          height: '400px',
           backgroundColor: 'gray',
           overflowY: 'scroll'
         }}
@@ -191,9 +195,18 @@ export default function AllTasks() {
         }
       </Box>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Stack>
-          <Pagination count={pages} color="primary" onChange={handlePage} />
-        </Stack>
+
+        {tipo === 'All' ?
+          <Stack>
+            <Pagination count={pages} color="primary" onChange={handlePage} />
+          </Stack>
+          :
+          <Stack>
+            <Pagination count={personalPages} color="primary" onChange={handlePage} />
+          </Stack>
+        }
+
+
       </div>
     </>
   );
