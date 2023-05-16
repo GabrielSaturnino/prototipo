@@ -13,23 +13,24 @@ import { Accounts } from 'meteor/accounts-base';
 export const Login = () => {
 
   const users = useTracker(() => UsersCollection.find({}).fetch());
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
 
   const handleSignIn = e => {
+    //e.preventDefault();
     const data = {
       email: e.target.elements.email.value,
       password: e.target.elements.password.value
     }
 
-    //Meteor.loginWithPassword(email, password);
-
     // validando dados
-    let validateMsg = handleValidate(data);
+    let validateMsg = handleValidate(email, senha);
     if (validateMsg !== "Dados válidos") {
       e.preventDefault();
       alert(validateMsg);
     } else {
       //validando se o usuario existe
-      validateMsg = handleVerifyExistentUser(data);
+      validateMsg = handleVerifyExistentUser(email, senha);
     }
 
     // //usuario inexistente
@@ -38,34 +39,27 @@ export const Login = () => {
       alert('Dados inválidos!');
     } else {
 
-      // usuario existente
-      handleLogIn(validateMsg, data);
+      //usuario existente
+      handleLogIn();
     }
   }
 
-  const handleValidate = dataUser => {
-    if (!dataUser.email) return "Digite um e-mail válido!";
-    if (!dataUser.password) return "Digite uma senha valida!";
+  const handleValidate = (email, senha) => {
+    if (!email) return "Digite um e-mail válido!";
+    if (!senha) return "Digite uma senha valida!";
     else return "Dados válidos";
   }
 
-  const handleVerifyExistentUser = user => {
+  const handleVerifyExistentUser = email => {
     let currentUser = false;
     users.forEach(savedUser => {
-      if (savedUser.email === user.email) currentUser = savedUser;
+      if (savedUser.email === email) currentUser = savedUser;
     });
     return currentUser;
   }
 
-  const handleLogIn = (data, ...rest) => {
-    const { name, email } = data;
-    const password = rest[0].password;
-
-    try {
-      Meteor.loginWithPassword(name, password);
-    } catch (err) {
-      console.log('ocorreu um erro!');
-    }
+  const handleLogIn = () => {
+    Meteor.loginWithPassword(email, senha);
   }
 
   return (
@@ -89,6 +83,8 @@ export const Login = () => {
               required
               id="outlined-required"
               type='email'
+              value={email}
+              onChange={e => setEmail(e.target.value)}
               name='email'
               placeholder='example@email.com'
             />
@@ -96,6 +92,8 @@ export const Login = () => {
               required
               id="outlined-disabled"
               type='password'
+              value={senha}
+              onChange={e => setSenha(e.target.value)}
               name='password'
               placeholder='Password'
             />

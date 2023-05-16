@@ -47,9 +47,11 @@ export default function Home() {
                 Tarefas
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                <p>Temos {totalTask} tarefas criadas!</p>
-                <p>Temos {totalTaskAndamento} tarefas em andamento!</p>
-                <p>Temos {totalTaskConcluida} tarefas concluidas!</p>
+
+                <Typography variant='subtitle2'>Temos {totalTask} tarefas criadas!</Typography>
+                <Typography variant='subtitle2'>Temos {totalTaskAndamento} tarefas em andamento!</Typography>
+                <Typography variant='subtitle2'>Temos {totalTaskConcluida} tarefas concluidas!</Typography>
+
               </Typography>
             </CardContent>
           </CardActionArea>
@@ -62,9 +64,11 @@ export default function Home() {
                 Suas tarefas pessoais:
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                <p>Tarefas pessoais criadas: {totalTaskPessoal}</p>
-                <p>Tarefas pessoais em andamento: {totalTaskAndamentoPessoal}</p>
-                <p>Tarefas pessoais concluidas: {totalTaskConcluidaPessoal}</p>
+
+                <Typography variant='subtitle2'>Tarefas pessoais criadas: {totalTaskPessoal}</Typography>
+                <Typography variant='subtitle2'>Tarefas pessoais em andamento: {totalTaskAndamentoPessoal}</Typography>
+                <Typography variant='subtitle2'>Tarefas pessoais concluidas: {totalTaskConcluidaPessoal}</Typography>
+
               </Typography>
             </CardContent>
           </CardActionArea>

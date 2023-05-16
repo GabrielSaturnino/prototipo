@@ -41,7 +41,7 @@ export default function AllTasks() {
     }
 
     let totalTasks = TasksCollection.find({ tipo: "Publica" }).count();
-    let totalPersonalTasks = TasksCollection.find({ tipo: "Pessoal" }).count();
+    let totalPersonalTasks = TasksCollection.find({ tipo: "Pessoal", createdBy: userId }).count();
 
     //itens por pagina
     const itensPerPage = 4;
@@ -205,8 +205,6 @@ export default function AllTasks() {
             <Pagination count={personalPages} color="primary" onChange={handlePage} />
           </Stack>
         }
-
-
       </div>
     </>
   );
