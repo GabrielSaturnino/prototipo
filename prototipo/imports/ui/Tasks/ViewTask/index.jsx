@@ -22,16 +22,13 @@ export const ViewTask = () => {
 
     const options0 = ['Criada', 'Iniciada'];
     const options1 = ['Criada', 'Iniciada', 'Finalizada'];
-    const options2 = ['Iniciada', 'Finalizada'];
     let options = options1;
 
     const [tipo, setTipo] = React.useState(options[0]);
     const [inputTipo, setInputTipo] = React.useState('');
 
     if (estado === 'Criada') options = options0;
-    if (estado === 'Iniciada') options = options1;
-    if (estado === 'Finalizada') options = options2;
-
+    if (estado === 'Iniciada' || estado === 'Finalizada') options = options1;
 
     const handleValidarEstado = () => {
         console.log(tipo)
@@ -45,7 +42,6 @@ export const ViewTask = () => {
                 situation: tipo
             }
         });
-        console.log('não devia estar aqui!')
         alert('Estadus da tarefa alterado para: ' + tipo);
     }
 
