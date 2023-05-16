@@ -6,6 +6,9 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 import { TaskCard } from '../TaskCard';
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
+import { PaginationItem } from '@mui/material';
 
 import { Meteor } from 'meteor/meteor';
 import { useTracker } from 'meteor/react-meteor-data';
@@ -21,9 +24,12 @@ export default function AllTasks() {
   const [estado, setEstado] = React.useState(options[0]);
   const [inputEstado, setInputEstado] = React.useState('');
   const [textInput, setTextInput] = useState('');
+  const [pages, setPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  let { listaTarefas, personalTasks, isLoading, filteredPost, filteredPersonalPost } = useTracker(() => {
-    let listaTarefas = TasksCollection.find({ tipo: "Publica" }).fetch();
+  let { listaTarefas, personalTasks, isLoading, filteredPost, filteredPersonalPost, totalTasks } = useTracker(() => {
+    //let listaTarefas = TasksCollection.find({ tipo: "Publica" }).fetch();
+    let listaTarefas = [];
     let personalTasks = TasksCollection.find({ createdBy: userId }).fetch();
     let isLoading = false;
 
@@ -33,18 +39,34 @@ export default function AllTasks() {
       isLoading = true;
     }
 
+    let totalTasks = TasksCollection.find({}).count();
+
+    //itens por pagina
+    const itensPerPage = 4;
+
+    // Numero de paginas 
+    const paginas = currentPage;
+
+    const itensAPular = (paginas - 1) * itensPerPage;
+
+    //let listaPaginada = TasksCollection.find({}, { skip: itensAPular, limit: itensPerPage }).fetch();
+
     // Tarefas Publicas
     if (estado === 'Qualquer' && tipo === 'All') {
-      listaTarefas = TasksCollection.find({ tipo: "Publica" }).fetch();
+      listaTarefas = TasksCollection.find(
+        { tipo: "Publica" }, { skip: itensAPular, limit: itensPerPage }).fetch();
     } else if (estado !== 'Qualquer' && tipo === 'All') {
-      listaTarefas = TasksCollection.find({ tipo: "Publica", situation: estado }).fetch();
+      listaTarefas = TasksCollection.find(
+        { tipo: "Publica", situation: estado }, { skip: itensAPular, limit: itensPerPage }).fetch();
     }
 
     // Tarefas Pessoais
     if (estado === 'Qualquer' && tipo === 'Pessoal') {
-      personalTasks = TasksCollection.find({ createdBy: userId }).fetch();
+      personalTasks = TasksCollection.find(
+        { createdBy: userId }, { skip: itensAPular, limit: itensPerPage }).fetch();
     } else if (estado !== 'Qualquer' && tipo === 'Pessoal') {
-      personalTasks = TasksCollection.find({ createdBy: userId, situation: estado }).fetch();
+      personalTasks = TasksCollection.find(
+        { createdBy: userId, situation: estado }, { skip: itensAPular, limit: itensPerPage }).fetch();
     }
 
     // Buscando Tarefas Publicas
@@ -67,8 +89,15 @@ export default function AllTasks() {
       :
       personalTasks;
 
-    return { listaTarefas, personalTasks, isLoading, filteredPost, filteredPersonalPost };
+    return { listaTarefas, personalTasks, isLoading, filteredPost, filteredPersonalPost, totalTasks };
   });
+
+  useEffect(() => {
+    const numberOfPages = Math.ceil(totalTasks / 4);
+
+    setPages(numberOfPages);
+
+  }, [totalTasks]);
 
   if (estado === null) setEstado('Qualquer');
 
@@ -83,6 +112,10 @@ export default function AllTasks() {
 
   const handleAllTasks = () => {
     setTipo('All');
+  }
+
+  const handlePage = (event, page) => {
+    setCurrentPage(page);
   }
 
   return (
@@ -139,7 +172,7 @@ export default function AllTasks() {
       <Box
         sx={{
           width: '100%',
-          height: '100%',
+          height: '500px',
           backgroundColor: 'gray',
           overflowY: 'scroll'
         }}
@@ -157,6 +190,11 @@ export default function AllTasks() {
           filteredPersonalPost.map(task => <TaskCard key={task._id} tasks={task} />)
         }
       </Box>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Stack>
+          <Pagination count={pages} color="primary" onChange={handlePage} />
+        </Stack>
+      </div>
     </>
   );
 }
