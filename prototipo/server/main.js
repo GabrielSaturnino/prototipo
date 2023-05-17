@@ -5,6 +5,7 @@ import { Accounts } from 'meteor/accounts-base';
 import '../imports/api/userMethods';
 import '../imports/api/taskMethods';
 import '../imports/api/tasksPublications';
+import '../imports/api/userPublications';
 
 const addUser = user => UsersCollection.insert({ user });
 const addTask = (text, user) => TasksCollection.insert({

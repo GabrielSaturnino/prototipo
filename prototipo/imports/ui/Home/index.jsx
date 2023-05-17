@@ -15,26 +15,36 @@ import { UsersCollection } from '../../api/users';
 
 export default function Home() {
   const user = Meteor.user();
-  const nomeDoUsuario = UsersCollection.findOne({ email: user.emails[0].address });
-  const firstName = nomeDoUsuario.name.split(' ');
 
-  // Tasks publicas
-  const totalTask = useTracker(() => TasksCollection.find({ tipo: 'Publica' }).count());
-  const totalTaskAndamento = useTracker(() =>
-    TasksCollection.find({ tipo: 'Publica', situation: 'Iniciada' }).count());
+  const { usuario } = useTracker(() => {
+    Meteor.subscribe('findOneUser', user.emails[0].address);
+    const usuario = UsersCollection.find().fetch();
+    return { usuario };
+  });
 
-  const totalTaskConcluida = useTracker(() =>
-    TasksCollection.find({ tipo: 'Publica', situation: 'Finalizada' }).count());
+  const firstName = usuario[0].name.split(' ');
 
-  // Tasks pessoais
-  const totalTaskPessoal = useTracker(() =>
-    TasksCollection.find({ createdBy: user._id }).count());
+  const { totalTask, totalTaskPessoal, totalTaskIniciada, totalTaskConcluida, totalTaskPessoalIniciada, totalTaskPessoalFinalizada } = useTracker(() => {
+    Meteor.subscribe('findPublicas');
+    const totalTask = TasksCollection.find({ tipo: 'Publica' }).count();
 
-  const totalTaskAndamentoPessoal = useTracker(() =>
-    TasksCollection.find({ createdBy: user._id, situation: 'Iniciada' }).count());
+    Meteor.subscribe('findPublicasAndamento');
+    const totalTaskIniciada = TasksCollection.find({ tipo: 'Publica', situation: 'Iniciada' }).count();
 
-  const totalTaskConcluidaPessoal = useTracker(() =>
-    TasksCollection.find({ createdBy: user._id, situation: 'Finalizada' }).count());
+    Meteor.subscribe('findPublicasFinalizada');
+    const totalTaskConcluida = TasksCollection.find({ tipo: 'Publica', situation: 'Finalizada' }).count();
+
+    Meteor.subscribe('findPessoal');
+    const totalTaskPessoal = TasksCollection.find({ createdBy: user._id, tipo: 'Pessoal' }).count();
+
+    Meteor.subscribe('findPessoalAndamento');
+    const totalTaskPessoalIniciada = TasksCollection.find({ createdBy: user._id, tipo: 'Pessoal', situation: 'Iniciada' }).count();
+
+    Meteor.subscribe('findPessoalFinalizada');
+    const totalTaskPessoalFinalizada = TasksCollection.find({ createdBy: user._id, tipo: 'Pessoal', situation: 'Finalizada' }).count();
+
+    return { totalTask, totalTaskPessoal, totalTaskIniciada, totalTaskConcluida, totalTaskPessoalIniciada, totalTaskPessoalFinalizada };
+  });
 
   return (
     <>
@@ -48,9 +58,9 @@ export default function Home() {
               </Typography>
               <Typography variant="body2" color="text.secondary">
 
-                <Typography variant='subtitle2'>Temos {totalTask} tarefas criadas!</Typography>
-                <Typography variant='subtitle2'>Temos {totalTaskAndamento} tarefas em andamento!</Typography>
-                <Typography variant='subtitle2'>Temos {totalTaskConcluida} tarefas concluidas!</Typography>
+                <Typography variant='span'>Temos {totalTask} tarefas criadas!</Typography> <br />
+                <Typography variant='span'>Temos {totalTaskIniciada} tarefas em andamento!</Typography> <br />
+                <Typography variant='span'>Temos {totalTaskConcluida} tarefas concluidas!</Typography>
 
               </Typography>
             </CardContent>
@@ -65,9 +75,9 @@ export default function Home() {
               </Typography>
               <Typography variant="body2" color="text.secondary">
 
-                <Typography variant='subtitle2'>Tarefas pessoais criadas: {totalTaskPessoal}</Typography>
-                <Typography variant='subtitle2'>Tarefas pessoais em andamento: {totalTaskAndamentoPessoal}</Typography>
-                <Typography variant='subtitle2'>Tarefas pessoais concluidas: {totalTaskConcluidaPessoal}</Typography>
+                <Typography variant='span'>Tarefas pessoais criadas: {totalTaskPessoal}</Typography> <br />
+                <Typography variant='span'>Tarefas pessoais em andamento: {totalTaskPessoalIniciada}</Typography> <br />
+                <Typography variant='span'>Tarefas pessoais concluidas: {totalTaskPessoalFinalizada}</Typography>
 
               </Typography>
             </CardContent>

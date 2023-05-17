@@ -19,16 +19,44 @@ Meteor.methods({
         })
     },
 
-    'editTask'(id, desc, name) {
-
+    'editTask'(id, desc, name, situation) {
         if (!this.userId) {
             throw new Meteor.Error('Not authorized.');
         }
 
-        TasksCollection.update(id, { $set: { desc: desc, name: name } });
+        TasksCollection.update(id, { $set: { desc: desc, name: name, situation: situation } });
+    },
+
+    'editTipo'(id, situation) {
+        if (!this.userId) {
+            throw new Meteor.Error('Not authorized.');
+        }
+
+        TasksCollection.update(id, { $set: { situation: situation } });
     },
 
     'deleteTask'(id) {
+        if (!this.userId) {
+            throw new Meteor.Error('Not authorized.');
+        }
+
         TasksCollection.remove(id);
-    }
+    },
+
+    'editTaskName'(id, name) {
+        if (!this.userId) {
+            throw new Meteor.Error('Not authorized.');
+        }
+
+        TasksCollection.update(id, { $set: { name: name } });
+    },
+
+    'editTaskDesc'(id, desc) {
+        if (!this.userId) {
+            throw new Meteor.Error('Not authorized.');
+        }
+
+        TasksCollection.update(id, { $set: { desc: desc } });
+    },
+
 })

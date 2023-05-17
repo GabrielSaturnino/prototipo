@@ -51,8 +51,6 @@ export default function AllTasks() {
 
     const itensAPular = (paginas - 1) * itensPerPage;
 
-    //let listaPaginada = TasksCollection.find({}, { skip: itensAPular, limit: itensPerPage }).fetch();
-
     // Tarefas Publicas
     if (estado === 'Qualquer' && tipo === 'All') {
       listaTarefas = TasksCollection.find(

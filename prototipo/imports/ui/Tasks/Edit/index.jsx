@@ -15,10 +15,13 @@ export default function EditTask() {
   const [redirect, setRedirect] = useState(false);
 
   const userID = Meteor.userId();
-  const tasks = useTracker(() => TasksCollection.find().fetch());
   const { id } = useParams();
 
-  const task = TasksCollection.findOne({ _id: id });
+  const { task } = useTracker(() => {
+    Meteor.subscribe('findOne', id);
+    const task = TasksCollection.find({ _id: id }).fetch();
+    return { task };
+  });
 
   const handleUpdate = e => {
     e.preventDefault();
@@ -35,8 +38,8 @@ export default function EditTask() {
 
   const handleUpdateTask = data => {
     if (data.name === '' && data.desc === '') return 'Preencha algum campo para editar!';
-    else if (data.name === '') TasksCollection.update(id, { $set: { desc: data.desc } });
-    else if (data.desc === '') TasksCollection.update(id, { $set: { name: data.name } });
+    else if (data.name === '') Meteor.call('editTaskDesc', id, data.desc);
+    else if (data.desc === '') Meteor.call('editTaskName', id, data.name);
     Meteor.call('editTask', id, data.desc, data.name);
     alert('Dados atualizados');
   }
@@ -70,7 +73,7 @@ export default function EditTask() {
           <TextField
             id="filled-search"
             label='Nome da tarefa'
-            placeholder={task.name}
+            placeholder={task[0].name}
             type="search"
             variant="filled"
             name='taskName'
@@ -79,7 +82,7 @@ export default function EditTask() {
           <TextField
             id="filled-multiline-flexible"
             label='descrição da tarefa'
-            placeholder={task.desc}
+            placeholder={task[0].desc}
             multiline
             maxRows={5}
             variant="filled"

@@ -24,12 +24,17 @@ export default function Profile() {
   const [image, setImage] = useState('');
 
   const currentUser = Meteor.user();
-  const nomeUser = UsersCollection.findOne({ email: currentUser.emails[0].address });
+
+  const { usuario } = useTracker(() => {
+    Meteor.subscribe('findOneUser', currentUser.emails[0].address);
+    const usuario = UsersCollection.find().fetch();
+    return { usuario };
+  });
 
   const [genero, setGenero] = React.useState(options[0]);
   const [inputGenero, setInputGenero] = React.useState('');
 
-  const [nome, setNome] = useState(nomeUser.name);
+  const [nome, setNome] = useState(usuario[0].name);
   const [email, setEmail] = useState(currentUser.emails[0].address);
   const [data, setData] = useState(currentUser.profile.date);
   const [sexo, setSexo] = useState(currentUser.profile.gender);
@@ -43,12 +48,11 @@ export default function Profile() {
   const originalEmpresa = currentUser.profile.empresa;
 
   const date = currentUser.profile.date;
-  const userData = UsersCollection.findOne({ email: email });
 
   let novaData = date.split('-');
 
   if (image === '') {
-    const userImage = userData.profileImg;
+    const userImage = usuario[0].profileImg;
     setImage(userImage);
   }
 
@@ -67,12 +71,7 @@ export default function Profile() {
 
   const handleSalvar = () => {
 
-    UsersCollection.update(userData._id, {
-      $set: {
-        name: nome,
-        profileImg: image
-      }
-    });
+    Meteor.call('atualizarData', usuario[0]._id, nome, image);
 
     Meteor.call('atualizarDadosUsuario', data, genero, empresa);
     setEdit(false);
@@ -87,12 +86,6 @@ export default function Profile() {
       img = reader.result.toString()
       setImage(reader.result.toString());
     }
-
-    UsersCollection.update(userData._id, {
-      $set: {
-        profileImg: image
-      }
-    });
     reader.readAsDataURL(file);
   }
 

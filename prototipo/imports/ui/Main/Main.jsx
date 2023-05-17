@@ -21,6 +21,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import TaskIcon from '@mui/icons-material/Task';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { useTracker } from 'meteor/react-meteor-data';
 
 import { Outlet, Link } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
@@ -100,10 +101,18 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export const Main = () => {
   const currentUser = Meteor.user();
-  const nomeUser = UsersCollection.findOne({ email: currentUser.emails[0].address });
-  const firstName = nomeUser.name.split(' ');
 
-  const userImg = nomeUser.profileImg;
+  //const nomeUser = UsersCollection.findOne({ email: currentUser.emails[0].address });
+
+  const { user } = useTracker(() => {
+    Meteor.subscribe('findOneUser', currentUser.emails[0].address);
+    const user = UsersCollection.find().fetch();
+    return { user };
+  });
+
+  const firstName = user[0].name.split(' ');
+
+  const userImg = user[0].profileImg;
 
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);

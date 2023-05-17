@@ -14,15 +14,19 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 export const ViewTask = () => {
 
     const userID = Meteor.userId();
-    const tasks = useTracker(() => TasksCollection.find().fetch());
     const { id } = useParams();
 
-    const task = TasksCollection.findOne({ _id: id });
-    const estado = task.situation;
+    const { task } = useTracker(() => {
+        Meteor.subscribe('findOne', id);
+        const task = TasksCollection.find({ _id: id }).fetch();
+        return { task };
+    });
+
+    const estado = task[0].situation;
 
     const options0 = ['Criada', 'Iniciada'];
     const options1 = ['Criada', 'Iniciada', 'Finalizada'];
-    let options = options1;
+    let options = options0;
 
     const [tipo, setTipo] = React.useState(options[0]);
     const [inputTipo, setInputTipo] = React.useState('');
@@ -37,11 +41,8 @@ export const ViewTask = () => {
     }
 
     const handleSalvarEstado = () => {
-        TasksCollection.update(id, {
-            $set: {
-                situation: tipo
-            }
-        });
+        let situation = tipo;
+        Meteor.call('editTipo', id, situation);
         alert('Estadus da tarefa alterado para: ' + tipo);
     }
 
@@ -70,7 +71,7 @@ export const ViewTask = () => {
                     <Typography variant='body1'>Nome da tarefa:</Typography>
                     <TextField
                         id="outlined-read-only-input"
-                        defaultValue={task.name}
+                        defaultValue={task[0].name}
                         sx={{ width: '100%' }}
                         InputProps={{
                             readOnly: true,
@@ -81,7 +82,7 @@ export const ViewTask = () => {
                     <Typography variant='body1'>Descrição da tarefa:</Typography>
                     <TextField
                         id="filled-read-only-input"
-                        defaultValue={task.desc}
+                        defaultValue={task[0].desc}
                         sx={{ width: '100%' }}
                         InputProps={{
                             readOnly: true,
@@ -93,7 +94,7 @@ export const ViewTask = () => {
                     <Typography variant='body1'>Criador da tarefa:</Typography>
                     <TextField
                         id="standard-read-only-input"
-                        defaultValue={task.userName}
+                        defaultValue={task[0].userName}
                         sx={{ width: '100%' }}
                         InputProps={{
                             readOnly: true,

@@ -12,7 +12,12 @@ import { Accounts } from 'meteor/accounts-base';
 
 export const Login = () => {
 
-  const users = useTracker(() => UsersCollection.find({}).fetch());
+  const { users } = useTracker(() => {
+    Meteor.subscribe('findAll');
+    const users = UsersCollection.find().fetch();
+    return { users }
+  });
+
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
@@ -59,7 +64,12 @@ export const Login = () => {
   }
 
   const handleLogIn = () => {
-    Meteor.loginWithPassword(email, senha);
+    Meteor.loginWithPassword(email, senha, function (err) {
+      if (err !== undefined) {
+        setError('Error in processing login!');
+        return;
+      }
+    });
   }
 
   return (

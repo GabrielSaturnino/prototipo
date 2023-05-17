@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { Container, Typography } from '@mui/material';
@@ -30,9 +30,15 @@ const style = {
 }
 
 export const NewAccount = () => {
-  const users = useTracker(() => UsersCollection.find({}).fetch());
+  //const users = useTracker(() => UsersCollection.find({}).fetch());
+  const { users } = useTracker(() => {
+    Meteor.subscribe('findAll');
+    const users = UsersCollection.find().fetch();
+    return { users }
+  });
 
   const handleSignIn = e => {
+    e.preventDefault();
     const data = {
       name: e.target.elements.name.value,
       email: e.target.elements.email.value,
@@ -77,14 +83,7 @@ export const NewAccount = () => {
   }
 
   const handleCreateUser = user => {
-    // Salva os dados de usuário
-    UsersCollection.insert({
-      name: user.name,
-      email: user.email,
-      profileImg: base64Image,
-      createdAt: new Date()
-    });
-
+    Meteor.call('criarUsuario', user.name, user.email, base64Image);
     handleCreate(user);
   }
 
