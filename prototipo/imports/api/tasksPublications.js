@@ -78,3 +78,40 @@ Meteor.publish('findPessoalFinalizada', function publishTask() {
     const pessoaisFinalizada = TasksCollection.find({ $and: [{ createdBy: this.userId }, { tipo: 'Pessoal' }, { situation: 'Finalizada' }] });
     return pessoais;
 })
+
+Meteor.publish('findPaginado', function publishTask(skip) {
+    if (!this.userId) {
+        return this.ready();
+    }
+
+    const paginado = TasksCollection.find({ tipo: 'Publica' }, { skip: skip, limit: 4 });
+    return paginado;
+})
+
+Meteor.publish('findPaginadoComTipo', function publishTask(skip, tipo) {
+    if (!this.userId) {
+        return this.ready();
+    }
+
+    const paginadoComTipo = TasksCollection.find({ situation: tipo }, { skip: skip, limit: 4 });
+    return paginadoComTipo;
+})
+
+Meteor.publish('findPaginadoPessoal', function publishTask(skip) {
+    if (!this.userId) {
+        return this.ready();
+    }
+
+    const paginadoPessoal = TasksCollection.find({ createdBy: this.userId }, { skip: skip, limit: 4 });
+    return paginadoPessoal;
+})
+
+Meteor.publish('findPaginadoPessoalComTipo', function publishTask(skip, tipo) {
+    if (!this.userId) {
+        return this.ready();
+    }
+
+    const paginadoPessoalComTipo = TasksCollection.find
+        ({ createdBy: this.userId, situation: tipo }, { skip: skip, limit: 4 });
+    return paginadoPessoalComTipo;
+})

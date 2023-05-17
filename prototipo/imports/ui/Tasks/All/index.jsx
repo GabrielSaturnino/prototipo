@@ -29,9 +29,6 @@ export default function AllTasks() {
   const [currentPage, setCurrentPage] = useState(1);
 
   let { listaTarefas, personalTasks, isLoading, filteredPost, filteredPersonalPost, totalTasks, totalPersonalTasks } = useTracker(() => {
-    //let listaTarefas = TasksCollection.find({ tipo: "Publica" }).fetch();
-    let listaTarefas = [];
-    let personalTasks = TasksCollection.find({ createdBy: userId }).fetch();
     let isLoading = false;
 
     const handler = Meteor.subscribe('tasks');
@@ -40,8 +37,16 @@ export default function AllTasks() {
       isLoading = true;
     }
 
-    let totalTasks = TasksCollection.find({ tipo: "Publica" }).count();
-    let totalPersonalTasks = TasksCollection.find({ tipo: "Pessoal", createdBy: userId }).count();
+    let listaTarefas = [];
+
+    Meteor.subscribe('findPessoal');
+    let totalPersonalTasks = TasksCollection.find({ createdBy: userId, tipo: 'Pessoal' }).count();
+
+    Meteor.subscribe('findPublicas');
+    let totalTasks = TasksCollection.find({ tipo: 'Publica' }).count();
+
+    Meteor.subscribe('findPessoal');
+    let personalTasks = TasksCollection.find({ createdBy: userId, tipo: 'Pessoal' }).fetch();
 
     //itens por pagina
     const itensPerPage = 4;
@@ -49,24 +54,32 @@ export default function AllTasks() {
     // Numero de paginas 
     const paginas = currentPage;
 
-    const itensAPular = (paginas - 1) * itensPerPage;
+    const skip = (paginas - 1) * itensPerPage;
+
 
     // Tarefas Publicas
     if (estado === 'Qualquer' && tipo === 'All') {
+      Meteor.subscribe('findPaginado', skip);
       listaTarefas = TasksCollection.find(
-        { tipo: "Publica" }, { skip: itensAPular, limit: itensPerPage }).fetch();
+        { tipo: "Publica" }, { skip: skip, limit: itensPerPage }).fetch();
+
     } else if (estado !== 'Qualquer' && tipo === 'All') {
+      Meteor.subscribe('findPaginadoComTipo', skip, estado);
       listaTarefas = TasksCollection.find(
-        { tipo: "Publica", situation: estado }, { skip: itensAPular, limit: itensPerPage }).fetch();
+        { tipo: "Publica", situation: estado }, { skip: skip, limit: itensPerPage }).fetch();
     }
+
 
     // Tarefas Pessoais
     if (estado === 'Qualquer' && tipo === 'Pessoal') {
+      Meteor.subscribe('findPaginadoPessoal', skip);
       personalTasks = TasksCollection.find(
-        { createdBy: userId }, { skip: itensAPular, limit: itensPerPage }).fetch();
+        { createdBy: userId }, { skip: skip, limit: itensPerPage }).fetch();
+
     } else if (estado !== 'Qualquer' && tipo === 'Pessoal') {
+      Meteor.subscribe('paginadoPessoalComTipo', skip, estado);
       personalTasks = TasksCollection.find(
-        { createdBy: userId, situation: estado }, { skip: itensAPular, limit: itensPerPage }).fetch();
+        { createdBy: userId, situation: estado }, { skip: skip, limit: itensPerPage }).fetch();
     }
 
     // Buscando Tarefas Publicas
@@ -93,8 +106,8 @@ export default function AllTasks() {
   });
 
   useEffect(() => {
-    const numberOfPages = Math.ceil(totalTasks / 4);
-    const numberOfPersonalPages = Math.ceil(totalPersonalTasks / 4);
+    const numberOfPages = Math.ceil(totalTasks / 3.5);
+    const numberOfPersonalPages = Math.ceil(totalPersonalTasks / 3.5);
 
     setPages(numberOfPages);
     setPersonalPages(numberOfPersonalPages);
