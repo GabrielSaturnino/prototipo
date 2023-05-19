@@ -18,7 +18,7 @@ export default function Home() {
 
   const { usuario } = useTracker(() => {
     Meteor.subscribe('findOneUser', user.emails[0].address);
-    const usuario = UsersCollection.find().fetch();
+    const usuario = UsersCollection.find({ email: user.emails[0].address }).fetch();
     return { usuario };
   });
 

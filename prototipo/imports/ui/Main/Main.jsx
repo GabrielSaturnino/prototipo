@@ -106,7 +106,7 @@ export const Main = () => {
 
   const { user } = useTracker(() => {
     Meteor.subscribe('findOneUser', currentUser.emails[0].address);
-    const user = UsersCollection.find().fetch();
+    const user = UsersCollection.find({ email: user.emails[0].address }).fetch();
     return { user };
   });
 
