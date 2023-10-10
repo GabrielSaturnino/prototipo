@@ -18,6 +18,7 @@ import { Link } from 'react-router-dom';
 
 import base64Image from './defaultImg';
 import '../../api/userMethods';
+import { Navigate } from 'react-router-dom';
 
 
 const style = {
@@ -30,7 +31,6 @@ const style = {
 }
 
 export const NewAccount = () => {
-  //const users = useTracker(() => UsersCollection.find({}).fetch());
   const { users } = useTracker(() => {
     Meteor.subscribe('findAll');
     const users = UsersCollection.find().fetch();
@@ -101,6 +101,7 @@ export const NewAccount = () => {
       }
     });
     alert('Usuário criado!');
+    Navigate('/');
   }
 
   return (

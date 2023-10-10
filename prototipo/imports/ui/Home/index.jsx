@@ -48,7 +48,7 @@ export default function Home() {
 
   return (
     <>
-      <Typography variant='h1' sx={{ fontSize: '2.5em', textAlign: 'center', marginBottom: '20px' }}>Olá {firstName[0]}, seja bem vindo ao Todo List</Typography>
+      <Typography variant='h1' sx={{ fontSize: '2.5em', textAlign: 'center', marginBottom: '20px' }}>Olá {firstName[0] ? firstName[0] : usuario[0].name}, seja bem vindo ao Todo List</Typography>
       <Box component='main' sx={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
         <Card sx={{ width: '350px', }}>
           <CardActionArea>

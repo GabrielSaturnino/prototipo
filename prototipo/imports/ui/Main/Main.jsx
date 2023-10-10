@@ -182,7 +182,7 @@ export const Main = () => {
                 <img style={{ height: '25px', width: '25px', borderRadius: '50%', }} src={userImg} />
               </ListItemIcon>
               <ListItemText primary={currentUser.emails[0].address}
-                secondary={firstName[0]}
+                secondary={firstName[0] ? firstName[0] : usuario[0].name}
                 sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
